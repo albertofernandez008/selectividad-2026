@@ -7,1054 +7,723 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Selectividad 26">
 <meta name="theme-color" content="#0a0a0f">
-<title>Selectividad 2026</title>
+<title>Selectividad 2026 — 7 días</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0a0a0f;--surf:#0f0f1a;--surf2:#161624;--surf3:#1e1e30;
-  --brd:rgba(255,255,255,0.07);--brd2:rgba(255,255,255,0.13);
-  --txt:#fff;--txt2:rgba(255,255,255,0.55);--txt3:rgba(255,255,255,0.28);
-  --acc:#6c63ff;--acc2:#a78bfa;
-  --fis:#378ADD;--fil:#7F77DD;--tec:#1D9E75;--mat:#E24B4A;--len:#EF9F27;--ing:#639922;--des:#5F5E5A;
+  --bg:#090910;--surf:#0f0f1c;--surf2:#15152a;--surf3:#1c1c35;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#fff;--t2:rgba(255,255,255,0.55);--t3:rgba(255,255,255,0.28);--t4:rgba(255,255,255,0.10);
+  --acc:#6c63ff;--acc2:#a78bfa;--acc3:#c4b5fd;
+  --fis:#378ADD;--fil:#7F77DD;--mat:#E24B4A;--len:#EF9F27;--ing:#639922;--des:#888780;
+  --rad:18px;--rad-sm:10px;
 }
-html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--txt);overflow:hidden}
-.shell{height:100dvh;max-width:430px;margin:0 auto;background:var(--surf);display:flex;flex-direction:column;overflow:hidden;position:relative}
+html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overflow:hidden;}
+.shell{height:100dvh;max-width:430px;margin:0 auto;background:var(--surf);display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.sbar{padding:env(safe-area-inset-top,14px) 22px 0;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:500;color:var(--t2);min-height:42px;flex-shrink:0;}
+.main-area{flex:1;overflow:hidden;position:relative;}
+.view{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;display:none;padding-bottom:calc(env(safe-area-inset-bottom,16px) + 72px);}
+.view::-webkit-scrollbar{display:none}
+.view.active{display:block;}
+.bnav{position:absolute;bottom:0;left:0;right:0;background:rgba(9,9,16,0.96);border-top:1px solid var(--border);padding:10px 0;padding-bottom:calc(env(safe-area-inset-bottom,10px) + 8px);display:flex;justify-content:space-around;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:0 10px;border:none;background:transparent;}
+.ni-ic{font-size:20px;line-height:1;}
+.ni-lb{font-size:10px;color:var(--t3);transition:color .2s;}
+.ni.on .ni-lb{color:var(--acc2);}
+.ni-dot{width:4px;height:4px;border-radius:50%;background:var(--acc2);margin-top:1px;opacity:0;transition:opacity .2s;}
+.ni.on .ni-dot{opacity:1;}
+.syne{font-family:'Syne',sans-serif;}
+.pbar-wrap{margin-bottom:10px;}
+.pbar-meta{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px;color:var(--t3);}
+.pbar-meta .val{color:var(--acc2);font-weight:600;}
+.pbar-track{height:3px;background:var(--t4);border-radius:3px;overflow:hidden;}
+.pbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .2s ease both;}
 
-/* STATUS BAR */
-.status-bar{padding:env(safe-area-inset-top,12px) 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:500;color:var(--txt2);min-height:40px;flex-shrink:0}
-
-/* SCREENS */
-.screen{display:none;flex-direction:column;flex:1;overflow:hidden}
-.screen.active{display:flex}
-
-/* ===== HORARIO SCREEN ===== */
-.app-header{padding:10px 24px 0;flex-shrink:0}
-.header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
-.app-title{font-family:'Syne',sans-serif;font-size:23px;font-weight:800;color:var(--txt);letter-spacing:-0.5px;line-height:1.1}
-.days-badge{background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:14px;padding:6px 14px;text-align:center;line-height:1.15}
-.days-badge .num{display:block;font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff}
-.days-badge .lbl{font-size:10px;font-weight:500;color:rgba(255,255,255,0.75)}
-.app-subtitle{font-size:11px;color:var(--txt3);margin-bottom:12px}
-.day-scroller{display:flex;gap:7px;padding:0 24px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;margin-bottom:2px}
+/* HORARIO */
+#v-horario{padding-top:0;}
+.hor-header{padding:12px 20px 8px;}
+.hor-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;}
+.dlbadge{background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:14px;padding:6px 14px;text-align:center;line-height:1.2;}
+.dlbadge .n{display:block;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.dlbadge .l{font-size:10px;color:rgba(255,255,255,.7);}
+.hor-sub{font-size:11px;color:var(--t3);margin-bottom:10px;}
+.day-scroller{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:6px;}
 .day-scroller::-webkit-scrollbar{display:none}
-.day-btn{flex-shrink:0;min-width:48px;padding:7px 11px;border-radius:18px;border:1px solid var(--brd);background:transparent;cursor:pointer;text-align:center;transition:all .18s}
-.day-btn.active{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent}
-.day-btn .d-num{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--txt);display:block}
-.day-btn .d-lbl{font-size:10px;color:var(--txt3);display:block;margin-top:1px}
-.day-btn.active .d-lbl{color:rgba(255,255,255,0.75)}
-.progress-wrap{padding:8px 24px 0;flex-shrink:0}
-.progress-meta{display:flex;justify-content:space-between;margin-bottom:5px}
-.progress-meta span{font-size:11px;color:var(--txt3)}
-.progress-meta .pct{font-weight:600;color:var(--acc2)}
-.progress-track{height:3px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s ease}
-.day-heading{padding:10px 24px 4px;display:flex;align-items:baseline;gap:10px;flex-shrink:0}
-.day-heading h2{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--txt)}
-.day-heading span{font-size:11px;color:var(--txt3)}
-.sessions{flex:1;overflow-y:auto;padding:0 16px;padding-bottom:calc(env(safe-area-inset-bottom,20px) + 72px);-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.sessions::-webkit-scrollbar{display:none}
-.session-card{background:rgba(255,255,255,0.035);border:1px solid var(--brd);border-radius:18px;margin-bottom:8px;padding:12px 13px;display:flex;gap:11px;align-items:flex-start;cursor:pointer;transition:background .15s,opacity .2s;position:relative;overflow:hidden;-webkit-user-select:none;user-select:none}
-.session-card:active{background:rgba(255,255,255,0.07)}
-.session-card.done{opacity:0.38}
-.session-card.done .s-name{text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.3)}
-.session-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
-.time-col{text-align:center;min-width:42px}
-.t-start{font-size:12px;font-weight:500;color:var(--txt)}
-.t-end{font-size:10px;color:var(--txt3)}
-.t-dur{font-size:10px;font-weight:600;margin-top:3px;padding:2px 5px;border-radius:7px;background:rgba(255,255,255,0.06);color:var(--txt3);display:inline-block}
-.info-col{flex:1;min-width:0}
-.s-subj{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
-.s-name{font-size:13px;font-weight:500;color:var(--txt);line-height:1.3;margin-bottom:4px}
-.s-tags{display:flex;gap:4px;flex-wrap:wrap}
-.tag{font-size:10px;padding:2px 6px;border-radius:7px;background:rgba(255,255,255,0.06);color:var(--txt3)}
-.card-actions{display:flex;flex-direction:column;gap:6px;align-items:center;flex-shrink:0;margin-top:1px}
-.check{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.14);background:transparent;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .2s}
-.session-card.done .check{background:rgba(108,99,255,0.25);border-color:var(--acc);color:var(--acc2)}
-.info-btn{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.1);background:transparent;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--txt3)}
-.break-row{display:flex;align-items:center;gap:10px;padding:3px 2px;margin-bottom:8px}
-.break-line{flex:1;height:1px;background:rgba(255,255,255,0.04)}
-.break-txt{font-size:10px;color:var(--txt3);white-space:nowrap}
+.day-btn{flex-shrink:0;min-width:46px;padding:7px 10px;border-radius:18px;border:1px solid var(--border);background:transparent;cursor:pointer;text-align:center;transition:all .18s;}
+.day-btn.on{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent;}
+.day-btn.done-day{border-color:rgba(29,158,117,.4);background:rgba(29,158,117,.08);}
+.day-btn .dn{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);display:block;}
+.day-btn .dl{font-size:10px;color:var(--t3);display:block;}
+.day-btn.on .dl{color:rgba(255,255,255,.7);}
+.day-btn .dd{font-size:9px;color:rgba(29,158,117,.8);display:block;margin-top:1px;}
+.day-heading{padding:4px 20px 6px;display:flex;align-items:baseline;gap:8px;}
+.day-heading h2{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;}
+.day-heading span{font-size:11px;color:var(--t3);}
+.sessions-list{padding:0 12px;}
+.sc{background:rgba(255,255,255,0.035);border:1px solid var(--border);border-radius:var(--rad);margin-bottom:8px;position:relative;overflow:hidden;transition:background .15s;}
+.sc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.sc-main{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;cursor:pointer;}
+.sc.done .sc-main{opacity:.38;}
+.sc.done .sn{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.3);}
+.sc-time{text-align:center;min-width:40px;flex-shrink:0;}
+.sc-ts{font-size:11px;font-weight:500;}
+.sc-te{font-size:10px;color:var(--t3);}
+.sc-dur{font-size:9px;font-weight:600;margin-top:3px;padding:2px 4px;border-radius:5px;background:var(--t4);color:var(--t3);display:inline-block;}
+.sc-info{flex:1;min-width:0;}
+.sj{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px;}
+.sn{font-size:13px;font-weight:500;line-height:1.3;margin-bottom:4px;}
+.sc-tags{display:flex;gap:4px;flex-wrap:wrap;}
+.stag{font-size:10px;padding:2px 5px;border-radius:5px;background:var(--t4);color:var(--t3);}
+.sc-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-top:2px;}
+.chk{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.14);background:transparent;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .2s;cursor:pointer;flex-shrink:0;}
+.sc.done .chk{background:rgba(108,99,255,.25);border-color:var(--acc);color:var(--acc2);}
+.sc-expand-btn{font-size:13px;color:var(--t3);border:none;background:transparent;cursor:pointer;padding:2px;line-height:1;transition:transform .2s;}
+.sc-expand-btn.open{transform:rotate(180deg);}
+.sc-detail{display:none;padding:0 12px 12px;border-top:1px solid var(--border);}
+.sc-detail.open{display:block;}
+.sc-desc{font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:10px;margin-top:10px;}
+.sc-detail h4{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+.sc-topics{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.sc-topic{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--t2);line-height:1.5;}
+.sc-topic::before{content:'▸';color:var(--acc2);flex-shrink:0;margin-top:1px;}
+.sc-links{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
+.sc-link{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);border-radius:var(--rad-sm);text-decoration:none;}
+.sc-link-title{font-size:12px;font-weight:500;color:var(--acc3);flex:1;}
+.sc-link-arr{font-size:12px;color:var(--acc2);}
+.sc-tip{background:rgba(239,159,39,.08);border:1px solid rgba(239,159,39,.2);border-radius:var(--rad-sm);padding:8px 10px;font-size:11px;color:rgba(239,159,39,.85);line-height:1.6;margin-top:8px;}
+.sc-tip::before{content:'💡 ';}
+.brk{display:flex;align-items:center;gap:8px;padding:3px 2px;margin-bottom:8px;}
+.brk-line{flex:1;height:1px;background:rgba(255,255,255,.04);}
+.brk-txt{font-size:10px;color:var(--t3);white-space:nowrap;}
+/* done-prev = sesión de un día anterior ya hecha */
+.sc.done-prev{opacity:.25;pointer-events:none;}
+.s-fis::before{background:var(--fis);} .s-fis .sj{color:var(--fis);}
+.s-fil::before{background:var(--fil);} .s-fil .sj{color:var(--fil);}
+.s-mat::before{background:var(--mat);} .s-mat .sj{color:var(--mat);}
+.s-len::before{background:var(--len);} .s-len .sj{color:var(--len);}
+.s-ing::before{background:var(--ing);} .s-ing .sj{color:var(--ing);}
+.s-des::before{background:var(--des);} .s-des .sj{color:var(--des);}
 
-/* SESSION DETAIL MODAL */
-.modal-overlay{display:none;position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:100;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.modal-overlay.open{display:flex;align-items:flex-end}
-.modal-sheet{background:var(--surf2);border-radius:24px 24px 0 0;width:100%;max-height:85%;overflow-y:auto;padding:0 0 calc(env(safe-area-inset-bottom,20px) + 20px);scrollbar-width:none;animation:slideUp .25s ease}
-.modal-sheet::-webkit-scrollbar{display:none}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-handle{width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:12px auto 16px}
-.modal-header{padding:0 20px 14px;border-bottom:1px solid var(--brd)}
-.modal-subj{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
-.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--txt);line-height:1.2}
-.modal-meta{font-size:12px;color:var(--txt3);margin-top:4px}
-.modal-body{padding:16px 20px}
-.modal-section{margin-bottom:18px}
-.modal-section-title{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px}
-.modal-desc{font-size:13px;color:var(--txt2);line-height:1.7}
-.topic-list{list-style:none;display:flex;flex-direction:column;gap:5px}
-.topic-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--txt2);line-height:1.5}
-.topic-list li::before{content:'→';color:var(--acc2);font-size:12px;margin-top:2px;flex-shrink:0}
-.link-list{display:flex;flex-direction:column;gap:7px}
-.ext-link{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--brd);border-radius:12px;text-decoration:none;color:var(--txt);font-size:13px;font-weight:500}
-.ext-link .link-icon{font-size:18px;flex-shrink:0}
-.ext-link .link-info{flex:1;min-width:0}
-.ext-link .link-name{font-size:13px;font-weight:500;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ext-link .link-url{font-size:10px;color:var(--txt3)}
-.ext-link .link-arrow{color:var(--txt3);font-size:14px}
-.tip-box{background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.2);border-radius:12px;padding:12px;font-size:13px;color:var(--txt2);line-height:1.6}
-.tip-box strong{color:var(--acc2);font-weight:500}
-.modal-done-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:14px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;border:none;margin-top:4px;transition:opacity .2s}
-.modal-done-btn:active{opacity:0.85}
+/* TEMARIO */
+#v-temario{padding:14px 14px 0;}
+.tem-hdr{margin-bottom:14px;}
+.tem-hdr h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:3px;}
+.tem-hdr p{font-size:12px;color:var(--t3);}
+.subj-card{background:var(--surf2);border:1px solid var(--border);border-radius:var(--rad);margin-bottom:10px;overflow:hidden;}
+.subj-hdr{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;}
+.subj-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.subj-info{flex:1;}
+.subj-name{font-size:13px;font-weight:600;}
+.subj-meta{font-size:10px;color:var(--t3);margin-top:1px;}
+.subj-pct{font-size:13px;font-weight:700;color:var(--acc2);}
+.subj-arr{font-size:12px;color:var(--t3);transition:transform .2s;margin-left:6px;}
+.subj-card.open .subj-arr{transform:rotate(180deg);}
+.subj-body{display:none;padding:0 12px 12px;}
+.subj-card.open .subj-body{display:block;}
+.topic-item{display:flex;align-items:flex-start;gap:8px;padding:10px;border-radius:var(--rad-sm);margin-bottom:6px;background:rgba(255,255,255,.03);border:1px solid var(--border);}
+.topic-chk{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .2s;}
+.topic-item.mastered .topic-chk{background:rgba(29,158,117,.25);border-color:#1D9E75;color:#1D9E75;}
+.topic-item.reviewing .topic-chk{background:rgba(239,159,39,.15);border-color:var(--len);color:var(--len);}
+.topic-info{flex:1;min-width:0;}
+.topic-name{font-size:13px;font-weight:500;margin-bottom:2px;}
+.topic-item.mastered .topic-name{color:var(--t2);}
+.topic-desc{font-size:11px;color:var(--t3);line-height:1.5;}
+.topic-status-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;}
+.topic-item.mastered .topic-status-badge{background:rgba(29,158,117,.15);color:#1D9E75;}
+.topic-item.reviewing .topic-status-badge{background:rgba(239,159,39,.12);color:var(--len);}
+.topic-btns{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+.tbtn{padding:5px 8px;border-radius:7px;border:1px solid var(--border2);background:transparent;font-size:10px;font-weight:500;color:var(--t2);cursor:pointer;white-space:nowrap;}
+.tbtn.trev{border-color:rgba(239,159,39,.3);color:var(--len);}
+.tbtn.tmas{border-color:rgba(29,158,117,.3);color:#1D9E75;}
+.topic-links{display:flex;flex-direction:column;gap:4px;margin-top:8px;}
 
-/* ===== TEMARIO SCREEN ===== */
-.screen-header{padding:14px 24px 10px;flex-shrink:0}
-.screen-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--txt);margin-bottom:4px}
-.screen-sub{font-size:12px;color:var(--txt3)}
-.subj-list{flex:1;overflow-y:auto;padding:0 16px;padding-bottom:calc(env(safe-area-inset-bottom,20px) + 72px);scrollbar-width:none}
-.subj-list::-webkit-scrollbar{display:none}
-.subj-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,255,255,0.035);border:1px solid var(--brd);border-radius:16px;margin-bottom:8px;cursor:pointer;transition:background .15s}
-.subj-header:active{background:rgba(255,255,255,0.07)}
-.subj-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.subj-header-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--txt);flex:1}
-.subj-count{font-size:11px;color:var(--txt3)}
-.subj-chevron{font-size:14px;color:var(--txt3);transition:transform .2s}
-.subj-header.open .subj-chevron{transform:rotate(90deg)}
-.topic-items{display:none;margin-bottom:8px}
-.subj-header.open + .topic-items{display:flex;flex-direction:column;gap:6px;padding:0 4px}
-.topic-item{display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.025);border:1px solid var(--brd);border-radius:13px;cursor:pointer;transition:background .15s}
-.topic-item:active{background:rgba(255,255,255,0.06)}
-.topic-item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.topic-item-name{font-size:13px;font-weight:500;color:var(--txt);flex:1;line-height:1.3}
-.topic-item-tag{font-size:10px;padding:2px 7px;border-radius:7px;background:rgba(255,255,255,0.06);color:var(--txt3)}
+/* POMODORO */
+#v-pomo{padding:0;}
+.pomo-inner{display:flex;flex-direction:column;align-items:center;padding:18px 20px 0;}
+.pomo-hdr{text-align:center;margin-bottom:16px;width:100%;}
+.pomo-hdr h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:2px;}
+.pomo-hdr p{font-size:12px;color:var(--t3);}
+.pomo-pills{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;justify-content:center;}
+.pomo-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:500;color:var(--t2);transition:all .18s;}
+.pomo-pill.on{background:var(--surf3);border-color:var(--border2);color:var(--text);}
+.pomo-circle-wrap{position:relative;width:200px;height:200px;margin-bottom:22px;flex-shrink:0;}
+.pomo-svg{transform:rotate(-90deg);}
+.pomo-track{fill:none;stroke:rgba(255,255,255,.06);stroke-width:8;}
+.pomo-ring{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .9s ease,stroke .4s;}
+.pomo-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.pomo-time{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;letter-spacing:-2px;line-height:1;}
+.pomo-phase{font-size:11px;color:var(--t3);margin-top:3px;text-transform:uppercase;letter-spacing:.08em;}
+.pomo-scount{font-size:11px;color:var(--acc2);margin-top:2px;}
+.pomo-ctrls{display:flex;gap:12px;align-items:center;margin-bottom:20px;}
+.pomo-btn{width:48px;height:48px;border-radius:50%;border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .18s;}
+.pomo-btn.main{width:64px;height:64px;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;font-size:24px;}
+.pomo-btn:active{transform:scale(.93);}
+.pomo-sel{width:100%;margin-bottom:14px;}
+.pomo-sel select{width:100%;padding:10px 14px;border-radius:var(--rad-sm);border:1px solid var(--border2);background:var(--surf2);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;-webkit-appearance:none;}
+.pomo-log{width:100%;}
+.pomo-log-title{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.pomo-log-list{display:flex;flex-direction:column;gap:5px;}
+.pomo-log-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--rad-sm);}
+.plog-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.plog-subj{font-size:12px;font-weight:500;flex:1;}
+.plog-time{font-size:10px;color:var(--t3);}
+.plog-dur{font-size:11px;font-weight:600;color:var(--acc2);}
 
-/* ===== POMODORO SCREEN ===== */
-.pomo-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 24px;padding-bottom:calc(env(safe-area-inset-bottom,20px) + 72px);overflow-y:auto;scrollbar-width:none}
-.pomo-wrap::-webkit-scrollbar{display:none}
-.pomo-mode-row{display:flex;gap:6px;margin-bottom:24px;width:100%}
-.pomo-mode-btn{flex:1;padding:8px 0;border-radius:12px;border:1px solid var(--brd);background:transparent;font-size:12px;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s}
-.pomo-mode-btn.active{background:var(--surf3);border-color:var(--brd2);color:var(--txt)}
-.pomo-ring-wrap{position:relative;width:200px;height:200px;margin:0 auto 24px;flex-shrink:0}
-.pomo-svg{width:200px;height:200px;transform:rotate(-90deg)}
-.pomo-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:8}
-.pomo-progress{fill:none;stroke:url(#pomoGrad);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
-.pomo-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.pomo-time{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:var(--txt);letter-spacing:-1px;line-height:1}
-.pomo-label{font-size:12px;color:var(--txt3);margin-top:4px}
-.pomo-controls{display:flex;gap:12px;margin-bottom:20px}
-.pomo-btn{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--brd2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;transition:background .15s}
-.pomo-btn.main{width:64px;height:64px;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;font-size:26px}
-.pomo-btn:active{background:rgba(255,255,255,0.08)}
-.pomo-btn.main:active{opacity:0.85}
-.pomo-sessions-info{font-size:13px;color:var(--txt3);margin-bottom:20px;text-align:center}
-.pomo-sessions-info span{color:var(--acc2);font-weight:600}
-.pomo-settings{width:100%;background:rgba(255,255,255,0.035);border:1px solid var(--brd);border-radius:16px;padding:14px}
-.pomo-set-title{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:12px}
-.pomo-set-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.pomo-set-row:last-child{margin-bottom:0}
-.pomo-set-label{font-size:13px;color:var(--txt2)}
-.pomo-set-ctrl{display:flex;align-items:center;gap:10px}
-.pomo-set-val{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--txt);min-width:28px;text-align:center}
-.pomo-set-btn{width:28px;height:28px;border-radius:8px;border:1px solid var(--brd2);background:transparent;cursor:pointer;font-size:16px;color:var(--txt2);display:flex;align-items:center;justify-content:center}
-.pomo-set-btn:active{background:rgba(255,255,255,0.08)}
-
-/* ===== PROGRESO SCREEN ===== */
-.prog-wrap{flex:1;overflow-y:auto;padding:0 16px;padding-bottom:calc(env(safe-area-inset-bottom,20px) + 72px);scrollbar-width:none}
-.prog-wrap::-webkit-scrollbar{display:none}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.stat-card{background:rgba(255,255,255,0.035);border:1px solid var(--brd);border-radius:16px;padding:14px}
-.stat-card .sc-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--txt);line-height:1}
-.stat-card .sc-label{font-size:11px;color:var(--txt3);margin-top:4px}
-.stat-card .sc-sub{font-size:12px;color:var(--acc2);margin-top:2px;font-weight:500}
-.prog-section-title{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin:14px 0 8px}
-.day-prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.day-prog-label{font-size:12px;color:var(--txt2);min-width:44px}
-.day-prog-bar{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
-.day-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .6s ease}
-.day-prog-pct{font-size:11px;color:var(--txt3);min-width:28px;text-align:right}
-.subj-prog-card{background:rgba(255,255,255,0.025);border:1px solid var(--brd);border-radius:14px;padding:12px 14px;margin-bottom:8px}
-.subj-prog-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.subj-prog-dot{width:8px;height:8px;border-radius:50%}
-.subj-prog-name{font-size:13px;font-weight:500;color:var(--txt);flex:1}
-.subj-prog-count{font-size:12px;color:var(--txt3)}
-.subj-prog-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
-.subj-prog-fill{height:100%;border-radius:2px;transition:width .6s ease}
-.motivation-card{background:linear-gradient(135deg,rgba(108,99,255,0.15),rgba(167,139,250,0.1));border:1px solid rgba(108,99,255,0.25);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center}
-.motivation-card .mot-emoji{font-size:28px;display:block;margin-bottom:8px}
-.motivation-card .mot-text{font-size:14px;font-weight:500;color:var(--txt);line-height:1.5}
-.motivation-card .mot-sub{font-size:12px;color:var(--txt3);margin-top:4px}
-.reset-btn{width:100%;padding:12px;background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.2);border-radius:12px;color:#E24B4A;font-size:13px;font-weight:500;cursor:pointer;margin-top:8px}
-.reset-btn:active{background:rgba(226,75,74,0.2)}
-
-/* BOTTOM NAV */
-.bottom-nav{position:absolute;bottom:0;left:0;right:0;background:rgba(10,10,15,0.96);border-top:1px solid var(--brd);padding:10px 0;padding-bottom:calc(env(safe-area-inset-bottom,10px) + 10px);display:flex;justify-content:space-around;flex-shrink:0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:50}
-.nav-it{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:0 10px;min-width:60px}
-.nav-ic{font-size:20px;line-height:1}
-.nav-lb{font-size:10px;color:var(--txt3);transition:color .18s}
-.nav-it.active .nav-lb{color:var(--acc2)}
-
-/* COLORS */
-.s-fis::before,.dot-fis,.subj-prog-fill.fis{background:var(--fis)}
-.s-fis .s-subj,.s-fis .modal-subj{color:var(--fis)}
-.s-fil::before,.dot-fil,.subj-prog-fill.fil{background:var(--fil)}
-.s-fil .s-subj,.s-fil .modal-subj{color:var(--fil)}
-.s-tec::before,.dot-tec,.subj-prog-fill.tec{background:var(--tec)}
-.s-tec .s-subj,.s-tec .modal-subj{color:var(--tec)}
-.s-mat::before,.dot-mat,.subj-prog-fill.mat{background:var(--mat)}
-.s-mat .s-subj,.s-mat .modal-subj{color:var(--mat)}
-.s-len::before,.dot-len,.subj-prog-fill.len{background:var(--len)}
-.s-len .s-subj,.s-len .modal-subj{color:var(--len)}
-.s-ing::before,.dot-ing,.subj-prog-fill.ing{background:var(--ing)}
-.s-ing .s-subj,.s-ing .modal-subj{color:var(--ing)}
-.s-des::before,.dot-des,.subj-prog-fill.des{background:var(--des)}
-.s-des .s-subj,.s-des .modal-subj{color:var(--des)}
-
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.session-card,.break-row{animation:fadeIn .2s ease both}
+/* PROGRESO */
+#v-progreso{padding:14px 14px 0;}
+.prog-hdr{margin-bottom:14px;}
+.prog-hdr h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:3px;}
+.prog-hdr p{font-size:12px;color:var(--t3);}
+.prog-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.stat-c{background:var(--surf2);border:1px solid var(--border);border-radius:var(--rad);padding:13px;}
+.stat-c .sv{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1;}
+.stat-c .sl{font-size:11px;color:var(--t3);margin-top:3px;}
+.stat-c .ss{font-size:10px;color:var(--acc2);margin-top:2px;font-weight:500;}
+.psec{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;margin-top:4px;}
+.prog-subj-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.prog-subj-info{flex:1;}
+.prog-subj-name{font-size:12px;font-weight:500;margin-bottom:3px;}
+.prog-sbar{height:3px;background:var(--t4);border-radius:3px;overflow:hidden;}
+.prog-sfill{height:100%;border-radius:3px;transition:width .5s ease;}
+.prog-spct{font-size:11px;font-weight:600;min-width:30px;text-align:right;}
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
+.hm-cell{aspect-ratio:1;border-radius:5px;background:var(--t4);transition:background .3s;position:relative;}
+.hm-cell.partial{background:rgba(108,99,255,.35);}
+.hm-cell.full{background:linear-gradient(135deg,var(--acc),var(--acc2));}
+.hm-labels{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:14px;}
+.hm-lbl{font-size:9px;color:var(--t3);text-align:center;}
+.ach-item{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--rad);margin-bottom:7px;}
+.ach-item.locked{opacity:.35;}
+.ach-ic{font-size:22px;flex-shrink:0;}
+.ach-name{font-size:12px;font-weight:600;}
+.ach-desc{font-size:10px;color:var(--t3);margin-top:1px;}
+.ach-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;flex-shrink:0;}
+.ach-badge.ok{background:rgba(108,99,255,.2);color:var(--acc2);}
+.ach-badge.no{background:var(--t4);color:var(--t3);}
+/* urgency banner */
+.urgency{margin:0 14px 10px;padding:10px 14px;background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.25);border-radius:var(--rad-sm);font-size:12px;color:rgba(255,120,120,.9);line-height:1.5;text-align:center;}
+.urgency strong{display:block;font-size:14px;font-weight:700;margin-bottom:2px;}
 </style>
 </head>
 <body>
 <div class="shell">
-  <div class="status-bar"><span id="clock">9:41</span><span style="font-size:14px;letter-spacing:2px">···</span><span>●●●</span></div>
-
-  <!-- HORARIO -->
-  <div class="screen active" id="sc-horario">
-    <div class="app-header">
-      <div class="header-row">
-        <div><div class="app-title">Selectividad<br>2026</div></div>
-        <div class="days-badge"><span class="num" id="days-left">12</span><span class="lbl">días</span></div>
-      </div>
-      <div class="app-subtitle">PEvAU Andalucía · Física · Filosofía · Tec · Mates · Lengua · Inglés</div>
-    </div>
-    <div class="day-scroller" id="day-scroller"></div>
-    <div class="progress-wrap">
-      <div class="progress-meta"><span>Sesiones completadas hoy</span><span class="pct" id="pct">0%</span></div>
-      <div class="progress-track"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-    </div>
-    <div class="day-heading"><h2 id="d-title">Día 1</h2><span id="d-sub">Arranque fuerte</span></div>
-    <div class="sessions" id="sessions"></div>
+  <div class="sbar">
+    <span id="clock">9:41</span>
+    <span style="font-size:13px;letter-spacing:2px;color:rgba(255,255,255,.4)">···</span>
+    <span>🔋</span>
   </div>
-
-  <!-- TEMARIO -->
-  <div class="screen" id="sc-temario">
-    <div class="screen-header">
-      <div class="screen-title">Temario</div>
-      <div class="screen-sub">Todo lo que entra en la PAU 2026 Andalucía</div>
-    </div>
-    <div class="subj-list" id="subj-list"></div>
-  </div>
-
-  <!-- POMODORO -->
-  <div class="screen" id="sc-pomodoro">
-    <div class="screen-header"><div class="screen-title">Pomodoro</div><div class="screen-sub">Estudia con foco · Descansa bien</div></div>
-    <div class="pomo-wrap">
-      <div class="pomo-mode-row">
-        <button class="pomo-mode-btn active" onclick="setMode('work')" id="pm-work">Estudio 🧠</button>
-        <button class="pomo-mode-btn" onclick="setMode('short')" id="pm-short">Descanso corto ☕</button>
-        <button class="pomo-mode-btn" onclick="setMode('long')" id="pm-long">Descanso largo 🛋</button>
-      </div>
-      <div class="pomo-ring-wrap">
-        <svg class="pomo-svg" viewBox="0 0 200 200">
-          <defs>
-            <linearGradient id="pomoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#6c63ff"/>
-              <stop offset="100%" stop-color="#a78bfa"/>
-            </linearGradient>
-          </defs>
-          <circle class="pomo-track" cx="100" cy="100" r="88"/>
-          <circle class="pomo-progress" id="pomo-ring" cx="100" cy="100" r="88" stroke-dasharray="553" stroke-dashoffset="0"/>
-        </svg>
-        <div class="pomo-center">
-          <div class="pomo-time" id="pomo-display">25:00</div>
-          <div class="pomo-label" id="pomo-label">Listo para empezar</div>
+  <div class="main-area">
+    <!-- HORARIO -->
+    <div class="view active" id="v-horario">
+      <div class="hor-header">
+        <div class="hor-top">
+          <div><h1 class="syne" style="font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1.1">Selectividad<br>2026</h1></div>
+          <div class="dlbadge"><span class="n" id="days-left-n">7</span><span class="l">días</span></div>
         </div>
+        <div class="hor-sub">PEvAU Andalucía · Física · Filosofía · Mates · Lengua · Inglés</div>
+        <div class="pbar-wrap">
+          <div class="pbar-meta"><span>Sesiones completadas hoy</span><span class="val" id="hor-pct">0%</span></div>
+          <div class="pbar-track"><div class="pbar-fill" id="hor-prog" style="width:0%"></div></div>
+        </div>
+        <div class="day-scroller" id="day-scroller"></div>
       </div>
-      <div class="pomo-controls">
-        <button class="pomo-btn" onclick="pomoPrev()" title="Resetear">↺</button>
-        <button class="pomo-btn main" id="pomo-playbtn" onclick="pomoToggle()">▶</button>
-        <button class="pomo-btn" onclick="pomoSkip()" title="Saltar">⏭</button>
-      </div>
-      <div class="pomo-sessions-info">Sesiones completadas: <span id="pomo-count">0</span> · Hoy: <span id="pomo-today">0</span></div>
-      <div class="pomo-settings">
-        <div class="pomo-set-title">Configuración de tiempos</div>
-        <div class="pomo-set-row">
-          <span class="pomo-set-label">Estudio</span>
-          <div class="pomo-set-ctrl">
-            <button class="pomo-set-btn" onclick="adjustTime('work',-5)">−</button>
-            <span class="pomo-set-val" id="cfg-work">25</span>
-            <button class="pomo-set-btn" onclick="adjustTime('work',5)">+</button>
+      <div class="day-heading"><h2 id="d-title" class="syne">Día 1</h2><span id="d-sub">Física completa + repaso álgebra</span></div>
+      <div class="sessions-list" id="sessions-list"></div>
+    </div>
+    <!-- TEMARIO -->
+    <div class="view" id="v-temario">
+      <div class="tem-hdr"><h2 class="syne">Temario PAU 2026</h2><p>Sin Tecnología · Marca cada tema según tu nivel</p></div>
+      <div id="temario-content"></div>
+    </div>
+    <!-- POMODORO -->
+    <div class="view" id="v-pomo">
+      <div class="pomo-inner">
+        <div class="pomo-hdr"><h2 class="syne">Pomodoro</h2><p>Estudia en bloques · Descansa · Rinde más</p></div>
+        <div class="pomo-pills">
+          <button class="pomo-pill on" onclick="setPomoMode('focus',this)">🧠 Enfoque 25 min</button>
+          <button class="pomo-pill" onclick="setPomoMode('short',this)">☕ Descanso 5 min</button>
+          <button class="pomo-pill" onclick="setPomoMode('long',this)">🌿 Largo 15 min</button>
+        </div>
+        <div class="pomo-circle-wrap">
+          <svg class="pomo-svg" viewBox="0 0 200 200" width="200" height="200">
+            <circle class="pomo-track" cx="100" cy="100" r="88"/>
+            <circle class="pomo-ring" id="pomo-ring" cx="100" cy="100" r="88" stroke="url(#pg)" stroke-dasharray="552.9" stroke-dashoffset="0"/>
+            <defs><linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs>
+          </svg>
+          <div class="pomo-center">
+            <div class="pomo-time" id="pomo-time">25:00</div>
+            <div class="pomo-phase" id="pomo-phase">Enfoque</div>
+            <div class="pomo-scount" id="pomo-scount">🍅 0 sesiones hoy</div>
           </div>
         </div>
-        <div class="pomo-set-row">
-          <span class="pomo-set-label">Descanso corto</span>
-          <div class="pomo-set-ctrl">
-            <button class="pomo-set-btn" onclick="adjustTime('short',-1)">−</button>
-            <span class="pomo-set-val" id="cfg-short">5</span>
-            <button class="pomo-set-btn" onclick="adjustTime('short',1)">+</button>
-          </div>
+        <div class="pomo-ctrls">
+          <button class="pomo-btn" onclick="resetPomo()">↺</button>
+          <button class="pomo-btn main" id="pomo-play-btn" onclick="togglePomo()">▶</button>
+          <button class="pomo-btn" onclick="skipPomo()">⏭</button>
         </div>
-        <div class="pomo-set-row">
-          <span class="pomo-set-label">Descanso largo</span>
-          <div class="pomo-set-ctrl">
-            <button class="pomo-set-btn" onclick="adjustTime('long',-5)">−</button>
-            <span class="pomo-set-val" id="cfg-long">20</span>
-            <button class="pomo-set-btn" onclick="adjustTime('long',5)">+</button>
-          </div>
+        <div class="pomo-sel">
+          <select id="pomo-subj">
+            <option value="">— Selecciona asignatura —</option>
+            <option value="fis">⚛️ Física</option>
+            <option value="fil">🧠 Filosofía</option>
+            <option value="mat">📐 Matemáticas</option>
+            <option value="len">📝 Lengua</option>
+            <option value="ing">🌐 Inglés</option>
+          </select>
+        </div>
+        <div class="pomo-log">
+          <div class="pomo-log-title">Sesiones de hoy</div>
+          <div class="pomo-log-list" id="pomo-log-list"><p style="font-size:12px;color:var(--t3);text-align:center;padding:10px 0">Todavía no has completado ningún pomodoro</p></div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- PROGRESO -->
-  <div class="screen" id="sc-progreso">
-    <div class="screen-header"><div class="screen-title">Progreso</div><div class="screen-sub">Tu avance en los 12 días</div></div>
-    <div class="prog-wrap" id="prog-wrap"></div>
-  </div>
-
-  <!-- MODAL DETAIL -->
-  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-    <div class="modal-sheet" id="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-header">
-        <div class="modal-subj" id="m-subj"></div>
-        <div class="modal-title" id="m-title"></div>
-        <div class="modal-meta" id="m-meta"></div>
-      </div>
-      <div class="modal-body" id="m-body"></div>
+    <!-- PROGRESO -->
+    <div class="view" id="v-progreso">
+      <div class="prog-hdr"><h2 class="syne">Tu progreso</h2><p>7 días para la PAU · Sin Tecnología</p></div>
+      <div class="prog-stats" id="prog-stats"></div>
+      <div class="psec">Por asignatura</div>
+      <div id="prog-subj-bars" style="margin-bottom:14px;"></div>
+      <div class="psec">Mapa de días</div>
+      <div class="heatmap" id="heatmap"></div>
+      <div class="hm-labels" id="hm-labels"></div>
+      <div class="psec">Logros</div>
+      <div id="achievements"></div>
     </div>
   </div>
-
-  <div class="bottom-nav">
-    <div class="nav-it active" onclick="goScreen('horario',this)"><div class="nav-ic">📅</div><div class="nav-lb" style="color:var(--acc2)">Horario</div></div>
-    <div class="nav-it" onclick="goScreen('temario',this)"><div class="nav-ic">📚</div><div class="nav-lb">Temario</div></div>
-    <div class="nav-it" onclick="goScreen('pomodoro',this)"><div class="nav-ic">⏱</div><div class="nav-lb">Pomodoro</div></div>
-    <div class="nav-it" onclick="goScreen('progreso',this)"><div class="nav-ic">📊</div><div class="nav-lb">Progreso</div></div>
+  <div class="bnav">
+    <button class="ni on" onclick="switchView('horario',this)"><span class="ni-ic">📅</span><span class="ni-lb">Horario</span><span class="ni-dot"></span></button>
+    <button class="ni" onclick="switchView('temario',this)"><span class="ni-ic">📚</span><span class="ni-lb">Temario</span><span class="ni-dot"></span></button>
+    <button class="ni" onclick="switchView('pomo',this)"><span class="ni-ic">🍅</span><span class="ni-lb">Pomodoro</span><span class="ni-dot"></span></button>
+    <button class="ni" onclick="switchView('progreso',this)"><span class="ni-ic">📊</span><span class="ni-lb">Progreso</span><span class="ni-dot"></span></button>
   </div>
 </div>
-
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
+// ── META ──
+const SUBJ_META={fis:{name:'Física',icon:'⚛️',color:'#378ADD'},fil:{name:'Filosofía',icon:'🧠',color:'#7F77DD'},mat:{name:'Matemáticas',icon:'📐',color:'#E24B4A'},len:{name:'Lengua',icon:'📝',color:'#EF9F27'},ing:{name:'Inglés',icon:'🌐',color:'#639922'},des:{name:'Info',icon:'🗂',color:'#888780'}};
+const DAY_NAMES=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 
-const SUBJ_NAMES={fis:'Física',fil:'Filosofía',tec:'Tecnología',mat:'Matemáticas',len:'Lengua',ing:'Inglés',des:'Logística'};
-const SUBJ_COLORS={fis:'#378ADD',fil:'#7F77DD',tec:'#1D9E75',mat:'#E24B4A',len:'#EF9F27',ing:'#639922',des:'#5F5E5A'};
-
-// Session detail data: keyed by a session id string
-const SESSION_DETAIL = {
-  // FÍSICA
-  'fis-grav':{
-    desc:'El campo gravitatorio es uno de los bloques que cae con mayor frecuencia. Necesitas dominar tanto los cálculos como el razonamiento conceptual sobre por qué los campos son conservativos.',
-    topics:['Ley de Gravitación Universal: F = G·m₁·m₂/r². Aprende a calcular la fuerza entre dos masas y la dirección del vector.','Intensidad del campo gravitatorio g = F/m = G·M/r². Distingue entre g en superficie y a una altura h.','Potencial gravitatorio V = -G·M/r. Ojo al signo negativo: siempre negativo porque el campo es atractivo.','Energía potencial Ep = m·V. Relación entre Ep y movimiento orbital: E total = Ec + Ep.','Leyes de Kepler: T² ∝ a³. Muy frecuente calcular el período o radio de una órbita circular.','Velocidad orbital: deduces igualando fuerza gravitatoria con fuerza centrípeta → v = √(GM/r).','Momento angular: L = m·v·r. Se conserva en órbitas.'],
-    links:[
-      {name:'Ejercicios campo gravitatorio — Selectividad.net',url:'https://www.selectividad.net/fisica/campo-gravitatorio',icon:'🔗'},
-      {name:'Vídeos Física PAU — Canal Educaplus',url:'https://www.educaplus.org/game/ley-de-la-gravitacion-universal',icon:'▶'},
-      {name:'Exámenes PAU Andalucía — Educalive',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'En el examen suele haber un problema de satélite en órbita circular. Plantea siempre la ecuación F_grav = F_centrípeta y despejas la incógnita. ¡No te olvides de las unidades!'
-  },
-  'fis-elec':{
-    desc:'El campo eléctrico y el magnético son los dos sub-bloques del electromagnetismo. El eléctrico es más parecido al gravitatorio (conservativo), el magnético no lo es.',
-    topics:['Ley de Coulomb: F = k·q₁·q₂/r². Mismo esquema que Gravitación pero con cargas. Puede ser repulsiva.','Campo eléctrico E = F/q = k·Q/r². Principio de superposición: suma vectorial de campos de varias cargas.','Potencial eléctrico V = k·Q/r. Trabajo para mover una carga: W = q·(Va-Vb).','Superficies equipotenciales: perpendiculares a las líneas de campo. La fuerza no realiza trabajo al moverse sobre ellas.','Diferencia de potencial y energía: Ep = q·V. La energía cinética se gana al bajar de potencial.'],
-    links:[
-      {name:'Ejercicios campo eléctrico — Fisicalab',url:'https://www.fisicalab.com/apartado/campo-electrico',icon:'🔗'},
-      {name:'Exámenes resueltos Física — Educalive',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'Ojo: el campo eléctrico es un vector, el potencial un escalar. En problemas con varias cargas: el campo se suma vectorialmente (con componentes), el potencial algebraicamente (más fácil).'
-  },
-  'fis-mag':{
-    desc:'Bloque denso pero con estructura muy repetida en los exámenes. Lo más importante: entender la Fuerza de Lorentz y la Inducción Electromagnética.',
-    topics:['Campo magnético B: magnitud y dirección. Regla de la mano derecha para el sentido.','Fuerza de Lorentz: F = q·v×B. La fuerza es perpendicular al movimiento → movimiento circular.','Radio de la trayectoria circular: r = m·v/(q·B). Muy frecuente en examen.','Fuerza sobre un conductor: F = I·L×B.','Campo creado por un hilo: B = μ₀·I/(2π·r). Fuerza entre dos hilos paralelos.','Flujo magnético: Φ = B·A·cos(θ).','Inducción de Faraday: fem = -ΔΦ/Δt. Regla de Lenz: la corriente inducida se opone al cambio.'],
-    links:[
-      {name:'Electromagnetismo — Fisicalab',url:'https://www.fisicalab.com/apartado/campo-magnetico',icon:'🔗'},
-      {name:'Exámenes PAU Andalucía',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'La inducción EM es la parte que más cuestan a los alumnos. Aprende bien el concepto: cuando cambia el flujo magnético se genera una diferencia de potencial. Luego aplica Faraday.'
-  },
-  'fis-mas':{
-    desc:'El Movimiento Armónico Simple es el puente entre mecánica y ondas. Es fundamental para entender las ondas que vienen después.',
-    topics:['Definición: movimiento periódico con F = -k·x (fuerza restauradora proporcional al desplazamiento).','Posición: x(t) = A·cos(ωt + φ₀). Velocidad: v(t) = -A·ω·sen(ωt + φ₀). Aceleración: a = -ω²·x.','Período y frecuencia: T = 2π/ω = 2π√(m/k) para masa-muelle; T = 2π√(L/g) para péndulo.','Energía: Ec = ½m·v², Ep = ½k·x². Energía mecánica total E = ½k·A² = constante.','Amplitud A, fase inicial φ₀, velocidad máxima = A·ω en x=0.'],
-    links:[
-      {name:'MAS — Fisicalab',url:'https://www.fisicalab.com/apartado/movimiento-armonico-simple',icon:'🔗'},
-    ],
-    tip:'El error más común es confundir ω (frecuencia angular) con f (frecuencia). Recuerda: ω = 2π·f = 2π/T. Si te dan el período, empieza por sacar ω.'
-  },
-  'fis-ondas':{
-    desc:'Las ondas son una extensión del MAS al espacio. Los fenómenos ondulatorios (interferencia, difracción) también entran.',
-    topics:['Magnitudes: amplitud A, longitud de onda λ, período T, frecuencia f, velocidad v = λ·f.','Ecuación de onda: y(x,t) = A·sen(kx - ωt). Número de onda k = 2π/λ.','Ondas transversales vs longitudinales. Ondas en una cuerda: v = √(T/μ).','Ondas estacionarias: nodos y vientres. Condición de resonancia.','Principio de Huygens. Reflexión, refracción, interferencia, difracción.','Ondas electromagnéticas: c = 3·10⁸ m/s. Espectro EM. Óptica: reflexión y refracción (Snell).'],
-    links:[
-      {name:'Ondas — Fisicalab',url:'https://www.fisicalab.com/apartado/ondas',icon:'🔗'},
-      {name:'Exámenes PAU Física Andalucía',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'La ecuación de onda y(x,t) asusta pero es mecánica. En el examen suelen darte la ecuación y pedirte que saques las magnitudes: A (coeficiente), k → λ = 2π/k, ω → T = 2π/ω, v = ω/k.'
-  },
-  'fis-moderna':{
-    desc:'La física del siglo XX. Relatividad especial, cuántica y nuclear. Aparece casi siempre en examen, especialmente el efecto fotoeléctrico.',
-    topics:['Relatividad especial: postulados de Einstein. Dilatación temporal, contracción espacial.','Equivalencia masa-energía: E = mc². Energía en reposo y energía cinética relativista.','Efecto fotoeléctrico: E_fotón = h·f = Φ + Ec_max. Función de trabajo Φ. Longitud de onda umbral λ₀ = h·c/Φ.','Dualidad onda-corpúsculo: longitud de onda de De Broglie λ = h/(m·v).','Física nuclear: número másico A, número atómico Z. Notación AX_Z.','Radiactividad: desintegración α, β, γ. Actividad y período de semidesintegración.','Fisión y fusión nuclear. Defecto de masa y energía liberada: ΔE = Δm·c².'],
-    links:[
-      {name:'Física cuántica — Khan Academy ES',url:'https://es.khanacademy.org/science/physics/quantum-physics',icon:'▶'},
-      {name:'Física nuclear — Fisicalab',url:'https://www.fisicalab.com/apartado/fisica-nuclear',icon:'🔗'},
-    ],
-    tip:'El efecto fotoeléctrico siempre sigue el mismo esquema: calcula E del fotón con E=hf, réstale la función de trabajo Φ y obtienes la Ec_max. Si E_fotón < Φ no hay efecto, independientemente de la intensidad.'
-  },
-  // FILOSOFÍA
-  'fil-platon':{
-    desc:'Platón es el autor más clásico y uno de los que más aparece en la PAU. El comentario de texto de Platón suele ser de La República o el Fedón.',
-    topics:['Teoría de las Ideas: el mundo sensible (imperfecto, cambiante) vs el mundo inteligible (perfecto, eterno). Las Ideas son la verdadera realidad.','El Mito de la Caverna (República VII): alegoría del proceso de educación filosófica. Los prisioneros = ignorancia; salida a la luz = conocimiento de las Ideas; la Idea del Bien = el Sol.','Teoría del conocimiento (epistemología): doxa (opinión, mundo sensible) vs episteme (ciencia, mundo inteligible). La línea dividida.','Teoría del alma: el alma es inmortal y preexistente. Alma tripartita: racional (cabeza), irascible (pecho), concupiscible (vientre).','Política: La República ideal. Correspondencia entre partes del alma y clases sociales: filósofos-gobernantes, guardianes, productores. La justicia como armonía.','Relación con Sócrates (maestro) y Aristóteles (discípulo que lo critica). Dualismo ontológico: Platón divide la realidad en dos mundos.'],
-    links:[
-      {name:'Platón — Filosofía en la Red',url:'https://www.filosofia.net/materiales/sofiafilia/p/platon.html',icon:'🔗'},
-      {name:'Comentarios de texto Filosofía PAU',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'La clave del comentario de texto de Platón: identifica qué parte del sistema filosófico aparece en el fragmento (¿habla de las Ideas? ¿del alma? ¿de política?), luego amplía explicando ese concepto y su relación con el resto del sistema.'
-  },
-  'fil-descartes':{
-    desc:'Descartes inaugura la filosofía moderna con el racionalismo. Muy frecuente en PAU. Aprende el método y la relación mente-cuerpo.',
-    topics:['El método cartesiano: 4 reglas. Evidencia (solo aceptar lo claro y distinto). Análisis (dividir problemas). Síntesis (de simple a complejo). Enumeración (verificar).','La duda metódica: dudar de todo hasta encontrar algo indubitables. No es escepticismo: es un instrumento.','El cogito: "pienso, luego existo" (cogito ergo sum). Primera certeza indudable. Prueba de la existencia del yo pensante.','Res cogitans (sustancia pensante, el alma) vs Res extensa (sustancia material, el cuerpo). Dualismo mente-cuerpo.','Dios como garantía: demuestra la existencia de Dios (argumento ontológico cartesiano). Dios garantiza que las ideas claras y distintas son verdaderas.','Racionalismo: el conocimiento viene de la razón (ideas innatas), no de los sentidos (que engañan).','Comparación con Platón: ambos son racionalistas y dualistas, pero Platón tiene mundo de las Ideas mientras Descartes parte del yo pensante.'],
-    links:[
-      {name:'Descartes — Filosofía en la Red',url:'https://www.filosofia.net/materiales/sofiafilia/d/descartes.html',icon:'🔗'},
-    ],
-    tip:'Para el comentario de Descartes: el texto suele ser del Discurso del Método o las Meditaciones. Identifica si habla de la duda, el cogito o el método, y explica el contexto completo del sistema racionalista.'
-  },
-  'fil-nietzsche':{
-    desc:'Nietzsche es el gran crítico de la tradición occidental. Su lenguaje es metafórico y potente. Aprende bien sus conceptos clave y la relación entre ellos.',
-    topics:['Crítica al platonismo y al cristianismo: invirtió los valores reales (mundo sensible) por los aparentes (mundo suprasensible). El "otro mundo" como huida de la vida.','La muerte de Dios: "Dios ha muerto" (La Gaya Ciencia). No es ateísmo simple: es el diagnóstico de que los valores supremos de Occidente se han derrumbado → nihilismo.','Nihilismo: el vacío de valores tras la muerte de Dios. Dos tipos: nihilismo pasivo (resignación) vs nihilismo activo (oportunidad para crear nuevos valores).','Voluntad de poder: la fuerza afirmativa de la vida que quiere superarse a sí misma. No es "querer dominar a otros", es querer crear, superar, afirmar.','El superhombre (Übermensch): el que supera la moral del rebaño y crea sus propios valores. Contraste con el último hombre (conformista).','Eterno retorno: si aceptarías vivir tu vida exactamente igual infinitas veces, eso es la máxima afirmación de la vida. Criterio para saber si vives auténticamente.','Apolo y Dioniso: dos pulsiones artísticas. Apolo (orden, forma, razón) vs Dioniso (caos, música, embriaguez vital). Nietzsche reivindica lo dionisíaco.'],
-    links:[
-      {name:'Nietzsche — Filosofía en la Red',url:'https://www.filosofia.net/materiales/sofiafilia/n/nietzsche.html',icon:'🔗'},
-    ],
-    tip:'El error clásico con Nietzsche: confundir "voluntad de poder" con autoritarismo político. En el examen deja claro que es una fuerza creadora y afirmativa de la vida, no una voluntad de dominación.'
-  },
-  'fil-ortega':{
-    desc:'Ortega y Gasset es el gran filósofo español del s.XX. Su pensamiento es accesible y conecta con la vida cotidiana. Muy valorado que lo contextualices en España.',
-    topics:['"Yo soy yo y mi circunstancia": la persona no se puede entender sin su entorno. La filosofía debe partir de la vida concreta, no de abstracciones.','Razón vital vs razón pura: ni el racionalismo (Descartes) ni el empirismo puros. La razón debe estar "vitalizada", enraizada en la vida e historia del sujeto.','Perspectivismo: cada persona ve la realidad desde su perspectiva. No hay perspectiva absoluta, pero todas son válidas y complementarias. La verdad es perspectivista.','La rebelión de las masas (1929): el "hombre-masa" es el que se cree superior sin haberse esforzado, no exige nada de sí mismo. Contraste con las "minorías selectas" (no élite económica, sino de calidad humana).','Generaciones históricas: la historia avanza por generaciones de ~15 años. Cada generación tiene una misión histórica.','Circunstancialismo: "Salvarse a sí mismo es salvar la circunstancia". La autorrealización pasa por comprometerse con el entorno.'],
-    links:[
-      {name:'Ortega y Gasset — Filosofía en la Red',url:'https://www.filosofia.net/materiales/sofiafilia/o/ortega.html',icon:'🔗'},
-    ],
-    tip:'Ortega conecta muy bien con Nietzsche (ambos critican al hombre mediocre) y con Descartes (a quien critica por su razón abstracta). Estos paralelismos dan puntos extra en el examen.'
-  },
-  // TECNOLOGÍA
-  'tec-mecan':{
-    desc:'Los sistemas mecánicos son el bloque más frecuente en Tecnología. Combina cálculo con comprensión conceptual de cómo funcionan las máquinas.',
-    topics:['Esfuerzos en sólidos: tracción/compresión (σ = F/A), cortadura (τ = F/A), flexión (σ = M·y/I), torsión (τ = M_t·r/J).','Deformación elástica: Ley de Hooke σ = E·ε. Módulo de Young E. Límite elástico vs rotura.','Factor de seguridad: fs = σ_rotura / σ_trabajo. Siempre mayor que 1.','Transmisión de movimiento: relación de transmisión i = ω_salida/ω_entrada = n_entrada/n_salida = z_entrada/z_salida (engranajes).','Engranajes: rectos, helicoidales, cónicos. Trenes de engranajes: i_total = producto de relaciones parciales.','Poleas y correas: i = d₁/d₂. Ventaja: transmiten a distancia.','Tornillo sin fin: gran reducción de velocidad en poco espacio. i = 1/z_corona × número de entradas.','Mecanismos biela-manivela: transforman rotación en traslación (y viceversa).'],
-    links:[
-      {name:'Tecnología PAU Andalucía — Educalive',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-      {name:'Resistencia de materiales — Ingemecanica',url:'https://ingemecanica.com/tutorialsemanal/tutorialn247.html',icon:'🔗'},
-    ],
-    tip:'En problemas de transmisión calcula siempre i = ω_salida/ω_entrada primero. Si i < 1 hay reducción de velocidad (y aumento de par). Si i > 1 hay multiplicación de velocidad.'
-  },
-  'tec-elec':{
-    desc:'Circuitos eléctricos y electrónica básica. Dos partes: análisis de circuitos (Kirchhoff) y dispositivos electrónicos (diodo, transistor).',
-    topics:['Leyes de Kirchhoff: Ley de nodos (ΣI_entrada = ΣI_salida) y Ley de mallas (ΣV = 0 en una malla cerrada).','Análisis de circuitos en CC: resistencias en serie y paralelo. Divisor de tensión y corriente.','Circuitos en CA: impedancia Z, ángulo de fase φ, factor de potencia cos(φ). Circuitos RLC.','Diodo: componente que deja pasar la corriente en un solo sentido. Aplicación: rectificador.','Transistor BJT: amplificador y conmutador. Tres terminales: base, colector, emisor. Configuraciones.','Puertas lógicas: AND, OR, NOT, NAND, NOR, XOR. Tablas de verdad. Álgebra de Boole básica.','Amplificador operacional (AO): amplificador diferencial ideal. Configuraciones inversora y no inversora. A = -Rf/Re (inversora).'],
-    links:[
-      {name:'Circuitos eléctricos — Ingemecanica',url:'https://ingemecanica.com',icon:'🔗'},
-      {name:'Electrónica básica — Electronics Tutorials',url:'https://www.electronics-tutorials.ws',icon:'🔗'},
-    ],
-    tip:'Para los circuitos con Kirchhoff: define el sentido de las corrientes en cada rama (aunque te equivoques el resultado sale negativo, lo cual también es correcto). Plantea tantas ecuaciones como incógnitas tienes.'
-  },
-  'tec-auto':{
-    desc:'Automatización y sistemas de control. Más conceptual que calculístico, pero hay que dominar los diagramas y la lógica.',
-    topics:['Sistemas de control en lazo abierto: la salida no influye en la entrada. Ejemplo: lavadora con temporizador fijo.','Sistemas de control en lazo cerrado (realimentación): la salida se compara con la referencia y se corrige el error. Más preciso y robusto.','Elementos de un sistema de control: comparador, controlador, actuador, planta/proceso, sensor.','Reguladores: P (proporcional), PI (proporcional-integral), PD, PID. El PID es el más usado en la industria.','Sensores: tipos según magnitud medida (temperatura → termómetro/termistor; posición → encoder; presión → manómetro).','Actuadores: elementos que actúan sobre el proceso (motor eléctrico, pistón hidráulico/neumático, válvula).','Lógica secuencial: autómatas (GRAFCET). Estados, transiciones, acciones. Distingue de lógica combinacional.'],
-    links:[
-      {name:'Sistemas de control — Tecnología Industrial',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'El diagrama de bloques de un sistema de control en lazo cerrado SIEMPRE sale en alguna pregunta. Memoriza los 5 bloques: referencia → comparador → controlador → actuador → proceso → sensor → (realimentación al comparador).'
-  },
-  // MATEMÁTICAS
-  'mat-algebra':{
-    desc:'El álgebra es uno de los cuatro bloques del examen y suele tener mucho peso. Dominar los sistemas de ecuaciones es imprescindible.',
-    topics:['Matrices: suma, producto, traspuesta, inversa. Condición para que exista inversa: det(A) ≠ 0.','Determinantes: regla de Sarrus (3x3), desarrollo por adjuntos. Propiedades: determinante de la traspuesta, del producto.','Rango de una matriz: número de filas no nulas tras escalonar. Determina las soluciones del sistema.','Sistemas de ecuaciones lineales: clasificación (compatible determinado, compatible indeterminado, incompatible) → Teorema de Rouché-Frobenius: comparar rango(A) con rango(A|b).','Regla de Cramer (solo para sistemas cuadrados compatibles determinados): xi = det(Ai)/det(A).','Método de Gauss: reducción por filas. Válido para cualquier sistema.','Programación lineal: función objetivo + restricciones. Región factible. El óptimo está en un vértice.'],
-    links:[
-      {name:'Álgebra PAU — Matematicas.net',url:'https://www.matematicas.net',icon:'🔗'},
-      {name:'Exámenes Mates II PAU Andalucía',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'El error más habitual en sistemas: olvidar discutir el sistema (compatibilidad). Si el examen pide "resuelve el sistema" y hay parámetro λ, SIEMPRE discute para qué valores de λ es compatible determinado, indeterminado o incompatible.'
-  },
-  'mat-calculo':{
-    desc:'Derivadas e integrales. El bloque más largo pero con procedimientos muy mecánicos una vez que los interiorizas.',
-    topics:['Límites: reglas básicas, indeterminaciones (0/0, ∞/∞, 0·∞). Regla de L\'Hôpital: si 0/0 o ∞/∞, deriva numerador y denominador.','Continuidad: una función es continua en x₀ si el límite existe, f(x₀) existe y coinciden.','Derivadas: reglas (suma, producto, cociente, cadena). Derivadas de funciones compuestas.','Tabla de derivadas: potencias, exponenciales (e^x → e^x; a^x → a^x·ln(a)), logaritmos (ln(x) → 1/x), trigonométricas.','Aplicaciones: monotonía (f\' > 0 creciente), extremos (f\' = 0 y cambio de signo), curvatura (f\'\' > 0 cóncava), puntos de inflexión (f\'\' = 0 y cambio de signo).','Optimización: plantear función de una variable → derivar → igualar a 0 → verificar con segunda derivada.','Integrales inmediatas: tabla básica. Técnicas: sustitución, partes (∫u·dv = u·v - ∫v·du), fracciones parciales.','Integral definida: Teorema Fundamental del Cálculo. Área entre curvas: ∫|f(x)-g(x)|dx.'],
-    links:[
-      {name:'Derivadas e integrales — Mate Para Todos',url:'https://www.matematicasonline.es',icon:'🔗'},
-      {name:'Exámenes Mates II — Educalive',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'Para optimización: lee el enunciado, define la variable, escribe la función objetivo en términos de UNA sola variable (usando la condición de ligadura), deriva, iguala a 0. Este esquema funciona en el 95% de los problemas.'
-  },
-  'mat-geom':{
-    desc:'Geometría analítica en el espacio 3D. Muchos alumnos la temen pero los procedimientos son muy sistemáticos.',
-    topics:['Vectores en R³: módulo, suma, producto escalar (a·b = |a||b|cosθ), producto vectorial (a×b, perpendicular a ambos), producto mixto (volumen del paralelepípedo).','Rectas en el espacio: ecuación vectorial, paramétrica, simétrica. A partir de un punto y un vector director.','Planos: ecuación general Ax+By+Cz+D=0. Vector normal (A,B,C). A partir de tres puntos no alineados o de un punto y dos vectores.','Posición relativa de rectas: paralelas, coincidentes, que se cortan, que se cruzan. Usar el rango de matrices.','Posición relativa de planos: paralelos, coincidentes, que se cortan en una recta, que se cortan en un punto (3 planos).','Distancias: punto a plano d = |Ax₀+By₀+Cz₀+D|/√(A²+B²+C²). Punto a recta, entre rectas que se cruzan.','Ángulos: entre planos, entre recta y plano, entre dos rectas.','Áreas y volúmenes: área de triángulo = ½|a×b|. Volumen de tetraedro = ⅙|a·(b×c)|.'],
-    links:[
-      {name:'Geometría analítica — Matematicas.net',url:'https://www.matematicas.net',icon:'🔗'},
-    ],
-    tip:'Dibuja SIEMPRE un esquema, aunque sea tosco. En el espacio 3D la visualización lo es todo. Para saber si dos rectas se cruzan: comprueba si el sistema que iguala sus ecuaciones paramétricas tiene solución.'
-  },
-  'mat-stats':{
-    desc:'GRAN NOVEDAD 2026. La estadística tiene ahora mucho más peso. Combina probabilidad clásica con distribuciones estadísticas.',
-    topics:['Probabilidad condicionada: P(A|B) = P(A∩B)/P(B). Sucesos independientes: P(A∩B) = P(A)·P(B).','Teorema de Bayes: P(Aᵢ|B) = P(B|Aᵢ)·P(Aᵢ) / ΣP(B|Aⱼ)·P(Aⱼ). Úsalo con tablas de contingencia.','Distribución Binomial: X~B(n,p). P(X=k) = C(n,k)·p^k·(1-p)^(n-k). Media μ=np. Desviación σ=√(np(1-p)).','Distribución Normal: X~N(μ,σ). Tipificar: Z = (X-μ)/σ. Usar tablas de la N(0,1). Regla 68-95-99.7%.','Intervalos de confianza: IC al 95% para la media: x̄ ± 1.96·(σ/√n). Para proporción: p̂ ± 1.96·√(p̂(1-p̂)/n).','Tablas de contingencia: frecuencias absolutas y relativas. Calcular probabilidades marginales y condicionadas.','Contraste de hipótesis básico (si entra): hipótesis nula H₀ vs alternativa H₁. Nivel de significación.'],
-    links:[
-      {name:'Estadística y probabilidad — Khan Academy ES',url:'https://es.khanacademy.org/math/statistics-probability',icon:'▶'},
-      {name:'Distribuciones — Estadística para todos',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'Con la distribución Normal: SIEMPRE tipifica primero (Z = (X-μ)/σ), luego busca en la tabla. Aprende a combinar la tabla con P(X>a) = 1 - P(Z < z_a) y P(a < X < b) = P(Z < z_b) - P(Z < z_a).'
-  },
-  // LENGUA
-  'len-texto':{
-    desc:'El comentario de texto es el núcleo del examen de Lengua en 2026. Ya no hay opción: hay UN solo texto y debes analizarlo completo.',
-    topics:['Comprensión: localiza la tesis (idea principal), argumentos y estructura del texto (enumeración, contraste, causa-efecto, etc.).','Tipo de texto y modalidad discursiva: narrativo, descriptivo, argumentativo, expositivo, instructivo. La mayoría en selectividad son argumentativos o expositivos.','Intención comunicativa: informar, persuadir, entretener, instruir. Relaciona con el tipo de texto y el registro.','Registro: formal/informal, culto/coloquial, objetivo/subjetivo. Fíjate en el léxico y la sintaxis.','Cohesión: mecanismos de cohesión textual. Referencia (pronombres, elipsis), conectores (sin embargo, por tanto, además...), repetición léxica, campos semánticos.','Comentario crítico: da tu opinión razonada. Usa frases como "el autor argumenta que... sin embargo..." o "comparto la idea de... porque...". Mínimo 5-6 líneas.','Presentación: letra clara, párrafos bien marcados, sin tachones. Vale el 10% de la nota.'],
-    links:[
-      {name:'Comentario de texto — Lengua y Literatura',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'Estructura fija para el comentario: 1) Resumen en 2-3 líneas. 2) Tipo de texto y estructura. 3) Recursos de cohesión con ejemplos del texto. 4) Comentario crítico personal. No improvises: sigue este orden siempre.'
-  },
-  'len-sintaxis':{
-    desc:'El análisis sintáctico da puntos seguros si lo dominas bien. Es mecánico y sistemático.',
-    topics:['Identificar el verbo principal → oración simple o compuesta. Si hay más de un verbo conjugado → oración compuesta.','Oraciones coordinadas: yuxtaposición (;), copulativas (y/ni), disyuntivas (o), adversativas (pero/sino), causales explicativas (pues).','Oraciones subordinadas sustantivas: función de sujeto, OD, atributo... Se sustituyen por "eso". Nexos: que, si, interrogativas indirectas.','Subordinadas adjetivas (de relativo): función de CN. Nexos: que, cual, quien, cuyo. Especificativas vs explicativas.','Subordinadas adverbiales: lugar (donde), tiempo (cuando/mientras), modo (como), causales (porque/ya que), finales (para que), condicionales (si), concesivas (aunque).','Sintagma nominal: determinante + núcleo (sustantivo/pronombre) + complementos (CN, aposición).','Sintagma verbal: núcleo (verbo) + complementos (CD, CI, CC, CR, CPred, Atributo, Agente).','Función del CD: se sustituye por lo/la/los/las. Función del CI: se sustituye por le/les.'],
-    links:[
-      {name:'Análisis sintáctico — Lengua y Literatura online',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'Método infalible: 1) Localiza todos los verbos conjugados. 2) Clasifica las proposiciones. 3) Analiza la función de las subordinadas. 4) Analiza el interior de cada proposición (SN y SV). 5) Etiqueta cada complemento.'
-  },
-  'len-literatura':{
-    desc:'Literatura española del siglo XX y XXI. No hace falta memorizar todo: domina los movimientos, los autores más importantes y 2-3 obras de cada uno.',
-    topics:['Generación del 98: Unamuno (Niebla, San Manuel Bueno Mártir), Azorín, Baroja (La busca), Valle-Inclán (Luces de bohemia). Temas: España, existencialismo, pesimismo.','Modernismo: Rubén Darío. En España: Juan Ramón Jiménez (Platero y yo; etapas: sensorial, intelectual, suficiente).','Generación del 27: Lorca (Romancero gitano, La casa de Bernarda Alba), Alberti, Aleixandre (Nobel), Neruda. Fusión de lo popular y lo vanguardista.','Vanguardias: ultraísmo, creacionismo, surrealismo. Influencia en el 27.','Posguerra — Narrativa: tremendismo (La familia de Pascual Duarte, Cela), novela social (El Jarama, Sánchez Ferlosio), experimentalismo (Tiempo de silencio).','Posguerra — Poesía: arraigada vs desarraigada. Poesía social (Blas de Otero, Celaya). Generación del 50 (Ángel González).','Teatro del siglo XX: Lorca (tragedia), Buero Vallejo (Historia de una escalera), esperpento de Valle-Inclán.','Literatura contemporánea (desde los 80): novela negra, histórica, intimista. Autores: Javier Marías, Eduardo Mendoza, Almudena Grandes.'],
-    links:[
-      {name:'Literatura española s.XX — EducaMadrid',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-    ],
-    tip:'Para la PAU no hace falta memorizar todas las obras: aprende el nombre de 2-3 obras clave por autor/movimiento y, sobre todo, los TEMAS y CARACTERÍSTICAS de cada movimiento. Eso es lo que preguntan.'
-  },
-  // INGLÉS
-  'ing-reading':{
-    desc:'El reading es la parte con más puntuación en inglés. Hay que leer rápido y localizar información precisa sin entender cada palabra.',
-    topics:['True / False / Not stated: lo más difícil es el "Not stated". Regla: si la información no está EXPLÍCITAMENTE en el texto → Not stated, aunque suene lógico.','Preguntas de comprensión: responde en inglés con tus propias palabras. No copies frases enteras del texto (penaliza). Usa información del texto pero reformula.','Vocabulario en contexto: te dan una palabra y piden el significado. Lee las frases alrededor: el contexto siempre da la pista.','Inferencia: algunas preguntas piden deducir algo que no está explícito. Usa la lógica del contexto.','Estrategia: lee las preguntas ANTES de leer el texto. Así sabes qué buscar. Luego lee el texto subrayando lo relevante.','Temas frecuentes: medio ambiente, redes sociales, inteligencia artificial, educación, salud, cultura.'],
-    links:[
-      {name:'Reading PAU Inglés — Educalive',url:'https://www.educalive.com/examenes-selectividad-andalucia',icon:'📄'},
-      {name:'Cambridge English — Práctica online',url:'https://www.cambridgeenglish.org/learning-english',icon:'🔗'},
-    ],
-    tip:'Para el True/False/Not stated: busca la oración del texto que se relaciona con la afirmación. Si la CONTRADICE → False. Si la CONFIRMA → True. Si NO APARECE en el texto → Not stated. No importa si es lógico o no.'
-  },
-  'ing-writing':{
-    desc:'El opinion essay es la parte del writing más frecuente. Con una estructura clara y conectores adecuados puedes sacar muy buena nota.',
-    topics:['Estructura del opinion essay: Párrafo 1 (introducción + tu tesis en 2-3 frases). Párrafo 2 (argumento 1 a favor + ejemplo). Párrafo 3 (argumento 2 o contraargumento + refutación). Párrafo 4 (conclusión resumiendo tu posición).','Conectores esenciales: Addition (Furthermore, Moreover, In addition, Besides). Contrast (However, Nevertheless, On the other hand, Although). Cause (Because, Since, As a result). Conclusion (In conclusion, To sum up, All things considered).','Fórmulas de opinión: In my opinion / I strongly believe that / From my perspective / It seems to me that / I am convinced that.','Léxico formal: evita "very" → usa "extremely / highly / considerably". Evita "good" → "beneficial / advantageous". Evita "bad" → "detrimental / harmful".','Email formal: saludo (Dear Mr/Ms + apellido), cuerpo (motivo → detalles → petición), cierre (Yours sincerely / Yours faithfully).','Longitud: 120-150 palabras. Cuenta antes de entregar. Ni demasiado corto ni relleno vacío.'],
-    links:[
-      {name:'Writing PAU Inglés — British Council',url:'https://learnenglish.britishcouncil.org/skills/writing',icon:'🔗'},
-    ],
-    tip:'El truco para que el writing suene fluido: varía la estructura de las frases. Empieza algunas con adverbio (Nevertheless,…), otras con cláusula subordinada (Although…, the fact is…), otras simples. No todas del mismo patrón.'
-  },
-  'ing-grammar':{
-    desc:'Use of English cubre los puntos gramaticales más frecuentes. Son los que más se repiten en PAU y que más puntos dan si los dominas.',
-    topics:['Tiempos verbales: Present Simple/Continuous, Past Simple/Continuous, Present Perfect (have + pp, acciones con relevancia presente), Past Perfect (had + pp, anterioridad al pasado), Future (will / going to / present continuous).','Condicionales: Type 0 (if + present, present). Type 1 (if + present, will + inf). Type 2 (if + past simple, would + inf → hipotético presente). Type 3 (if + past perfect, would have + pp → hipotético pasado). Mixed conditionals.','Voz pasiva: Object + to be (tiempo) + past participle. Ej: "The book was written by Cervantes." Con modal: "The problem could be solved".','Reported speech: cambios de tiempo (say → said: present→past, past→past perfect, will→would). Cambios de pronombres y expresiones de tiempo.','Modal verbs: can/could (ability/permission), may/might (possibility), must (obligation/deduction), should (advice), need (necessity), used to (past habits).','Phrasal verbs frecuentes: give up, carry out, put off, look forward to, come across, take up, bring up, look after, go on, turn down.','Question tags: frase afirmativa + tag negativo. "She works here, doesn\'t she?" / "He didn\'t come, did he?"'],
-    links:[
-      {name:'Grammar — British Council',url:'https://learnenglish.britishcouncil.org/grammar',icon:'🔗'},
-      {name:'Use of English — Cambridge',url:'https://www.cambridgeenglish.org',icon:'🔗'},
-    ],
-    tip:'Los condicionales son lo que más cae en la transformación de frases. Aprende los 4 tipos de memoria. Cuando te pidan transformar "If I had studied more, I would have passed" → identifica el tipo (Type 3) y aplica la estructura.'
-  },
+// ── TEMARIO (sin Tecnología) ──
+const TEMARIO={
+fis:{name:'Física',icon:'⚛️',color:'#378ADD',topics:[
+{id:'f1',name:'Campo gravitatorio',desc:'Ley de Newton, intensidad/potencial gravitatorio, energía orbital, Kepler.',links:[{t:'Ejercicios gravitación PAU',u:'https://www.fisicaygalf.com/selectividad-fisica/gravitacion/'}]},
+{id:'f2',name:'Campo eléctrico',desc:'Ley de Coulomb, campo E y potencial V, superposición, trabajo eléctrico.',links:[{t:'Ejercicios campo eléctrico',u:'https://www.fisicaygalf.com/selectividad-fisica/electricidad/'}]},
+{id:'f3',name:'Campo magnético e inducción',desc:'Fuerza de Lorentz, Biot-Savart, inducción EM, ley de Faraday y Lenz.',links:[{t:'Ejercicios electromagnetismo',u:'https://www.fisicaygalf.com/selectividad-fisica/electromagnetismo/'}]},
+{id:'f4',name:'MAS y ondas',desc:'MAS cinemática/energía, ecuación de onda, ondas estacionarias.',links:[{t:'Ejercicios ondas PAU',u:'https://www.fisicaygalf.com/selectividad-fisica/ondas/'}]},
+{id:'f5',name:'Ondas EM y óptica',desc:'Espectro EM, reflexión, refracción (Snell), lentes y espejos.',links:[{t:'Óptica ejercicios',u:'https://www.fisicaygalf.com/selectividad-fisica/optica/'}]},
+{id:'f6',name:'Relatividad especial',desc:'Dilatación del tiempo, contracción espacial, factor de Lorentz, E=mc².',links:[{t:'Relatividad problemas',u:'https://www.fisicapractica.com/relatividad.php'}]},
+{id:'f7',name:'Física cuántica',desc:'Efecto fotoeléctrico, fotones, dualidad onda-corpúsculo, De Broglie.',links:[{t:'Cuántica ejercicios',u:'https://www.fisicaygalf.com/selectividad-fisica/cuantica/'}]},
+{id:'f8',name:'Física nuclear',desc:'Radiactividad, fisión/fusión nuclear, energía de enlace, defecto de masa.',links:[{t:'Nuclear ejercicios PAU',u:'https://www.fisicaygalf.com/selectividad-fisica/nuclear/'}]},
+]},
+fil:{name:'Filosofía',icon:'🧠',color:'#7F77DD',topics:[
+{id:'p1',name:'Platón',desc:'Teoría de las Ideas, mito de la caverna, dualismo, episteme/doxa, República.',links:[{t:'Resumen Platón',u:'https://www.webdianoia.com/platon/platon.htm'}]},
+{id:'p2',name:'Descartes',desc:'Duda metódica, cogito ergo sum, método cartesiano, res cogitans/extensa.',links:[{t:'Resumen Descartes',u:'https://www.webdianoia.com/moderna/descartes/descartes.htm'}]},
+{id:'p3',name:'Nietzsche',desc:'Nihilismo, voluntad de poder, superhombre, eterno retorno, muerte de Dios.',links:[{t:'Resumen Nietzsche',u:'https://www.webdianoia.com/contemporanea/nietzsche/nietzsche.htm'}]},
+{id:'p4',name:'Ortega y Gasset',desc:'Razón vital, perspectivismo, yo+circunstancia, masas, generaciones.',links:[{t:'Resumen Ortega',u:'https://www.webdianoia.com/contemporanea/ortega/ortega.htm'}]},
+]},
+mat:{name:'Matemáticas II',icon:'📐',color:'#E24B4A',topics:[
+{id:'m1',name:'Matrices y determinantes',desc:'Operaciones, determinante (Sarrus, adjuntos), matriz inversa, rango.',links:[{t:'Matrices PAU',u:'https://www.matematicasonline.es/4ESO/paginas/matrices.htm'}]},
+{id:'m2',name:'Sistemas de ecuaciones',desc:'Gauss, regla de Cramer, discusión según parámetros.',links:[{t:'Sistemas ecuaciones PAU',u:'https://www.matematicasonline.es/'}]},
+{id:'m3',name:'Límites y derivadas',desc:'Límites, L\'Hôpital, derivadas, monotonía, optimización.',links:[{t:'Derivadas PAU',u:'https://www.matematicasonline.es/BachillerCiencias/paginas/derivadas.htm'}]},
+{id:'m4',name:'Integrales y áreas',desc:'Primitivas, integración por partes/sustitución, Barrow, áreas entre curvas.',links:[{t:'Integrales PAU',u:'https://www.matematicasonline.es/BachillerCiencias/paginas/integrales.htm'}]},
+{id:'m5',name:'Geometría analítica 3D',desc:'Vectores, rectas y planos, posición relativa, distancias y ángulos.',links:[{t:'Geometría analítica PAU',u:'https://www.matematicasonline.es/BachillerCiencias/paginas/geometria-analitica.htm'}]},
+{id:'m6',name:'Estadística y probabilidad ⭐',desc:'Normal, Binomial, tipificación Z, Bayes, intervalos confianza. Novedad 2026.',links:[{t:'Estadística PAU',u:'https://www.matematicasonline.es/BachillerCiencias/paginas/estadistica.htm'},{t:'Calculadora Normal Z',u:'https://www.calculator.net/z-score-calculator.html'}]},
+]},
+len:{name:'Lengua Castellana',icon:'📝',color:'#EF9F27',topics:[
+{id:'l1',name:'Comentario de texto',desc:'Tema, ideas, estructura, tipo textual, intención, valoración crítica.',links:[{t:'Comentario de texto bachillerato',u:'https://www.apuntesde.es/bachillerato/lengua/comentario-de-texto/'}]},
+{id:'l2',name:'Análisis sintáctico',desc:'Sintagmas, oraciones compuestas, subordinadas sustantivas/adjetivas/adverbiales.',links:[{t:'Sintaxis bachillerato',u:'https://www.apuntesde.es/bachillerato/lengua/sintaxis/'}]},
+{id:'l3',name:'Tipos de texto y pragmática',desc:'Narrativo, expositivo, argumentativo. Registro lingüístico, variedades.',links:[{t:'Tipología textual',u:'https://www.apuntesde.es/bachillerato/lengua/tipologia-textual/'}]},
+{id:'l4',name:'Generación del 27',desc:'Lorca, Alberti, Salinas, Guillén, Aleixandre. Contexto y obras.',links:[{t:'Generación del 27',u:'https://www.apuntesde.es/bachillerato/literatura/generacion-del-27/'}]},
+{id:'l5',name:'Literatura posguerra y contemporánea',desc:'Tremendismo, novela social, experimental, narrativa actual.',links:[{t:'Literatura posguerra',u:'https://www.apuntesde.es/bachillerato/literatura/posguerra/'}]},
+{id:'l6',name:'Ortografía ⚠️ penaliza 2 pts',desc:'Tildes (general, diacrítica, hiatos), puntuación. Crucial en 2026.',links:[{t:'Ejercicios ortografía',u:'https://www.juegosdeortografia.com/'}]},
+]},
+ing:{name:'Inglés',icon:'🌐',color:'#639922',topics:[
+{id:'i1',name:'Reading comprehension',desc:'Skimming, scanning, True/False/Not stated, vocabulario en contexto.',links:[{t:'Reading practice B2',u:'https://learnenglish.britishcouncil.org/skills/reading'}]},
+{id:'i2',name:'Writing: opinion essay',desc:'Estructura: gancho+tesis → 2 argumentos → conclusión. Conectores.',links:[{t:'Opinion essays guía',u:'https://www.perfect-english-grammar.com/opinion-essays.html'}]},
+{id:'i3',name:'Condicionales + reported speech',desc:'Types 0,1,2,3 y mixtos. Reported speech: cambios tiempo/pronombres.',links:[{t:'Condicionales ejercicios',u:'https://www.perfect-english-grammar.com/conditionals.html'}]},
+{id:'i4',name:'Voz pasiva + modales',desc:'Pasiva en todos los tiempos. Must, should, can, could, might.',links:[{t:'Passive voice ejercicios',u:'https://www.perfect-english-grammar.com/passive.html'}]},
+]},
 };
 
-// DAYS schedule
+// ── DÍAS ── 7 días, sin Tecnología, intensivo
+// Sesiones con preCompleted=true son las que ya hizo según las capturas
 const DAYS=[
-  {label:'Lun',sub:'Arranque fuerte',s:[
-    {t:'08:30',e:'09:30',c:'fis',n:'Campo gravitatorio + Kepler',g:['Problemas','Fórmulas'],id:'fis-grav'},
-    {t:'09:40',e:'10:40',c:'mat',n:'Álgebra: matrices y sistemas',g:['Cramer','Gauss'],id:'mat-algebra'},
-    {t:'10:40',e:'11:00',b:'Descanso · Snack'},
-    {t:'11:00',e:'11:30',c:'len',n:'Comentario de texto',g:['Práctica diaria'],id:'len-texto'},
-    {t:'11:30',e:'13:00',c:'fis',n:'Problemas exámenes anteriores',g:['PAU 2023','PAU 2024'],id:'fis-grav'},
-    {t:'13:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:30',c:'mat',n:'Repaso álgebra + examen tipo',g:['Cronometrado'],id:'mat-algebra'},
-    {t:'17:40',e:'18:10',c:'ing',n:'Reading comprensión',g:['Vocabulario'],id:'ing-reading'},
-  ]},
-  {label:'Mar',sub:'Platón + campo eléctrico',s:[
-    {t:'08:30',e:'09:30',c:'fis',n:'Campo eléctrico y potencial',g:['Coulomb','Superficies'],id:'fis-elec'},
-    {t:'09:40',e:'10:40',c:'fil',n:'Platón: Ideas, caverna y política',g:['República','Conocimiento'],id:'fil-platon'},
-    {t:'10:40',e:'11:00',b:'Descanso'},
-    {t:'11:00',e:'12:00',c:'ing',n:'Reading + vocabulario temático',g:['Medio ambiente','Tecnología'],id:'ing-reading'},
-    {t:'12:00',e:'13:00',c:'fis',n:'Problemas campo eléctrico',g:['Exámenes reales'],id:'fis-elec'},
-    {t:'13:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:00',c:'fil',n:'Esquema Platón + texto tipo',g:['Comentario'],id:'fil-platon'},
-    {t:'17:10',e:'18:00',c:'len',n:'Análisis sintáctico',g:['Subordinadas','Coordinadas'],id:'len-sintaxis'},
-  ]},
-  {label:'Mié',sub:'Descartes + electromag',s:[
-    {t:'08:30',e:'09:30',c:'fis',n:'Campo magnético + Lorentz',g:['Fuerza','Trayectorias'],id:'fis-mag'},
-    {t:'09:40',e:'10:40',c:'fil',n:'Descartes: cogito y racionalismo',g:['Método','Dualismo'],id:'fil-descartes'},
-    {t:'10:40',e:'11:00',b:'Descanso'},
-    {t:'11:00',e:'12:00',c:'mat',n:'Derivadas y optimización',g:['Regla cadena','Máximos'],id:'mat-calculo'},
-    {t:'12:00',e:'13:00',c:'fis',n:'Inducción EM + Faraday',g:['Flujo','Lenz'],id:'fis-mag'},
-    {t:'13:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:00',c:'fil',n:'Texto Descartes + comparar Platón',g:['Relación autores'],id:'fil-descartes'},
-    {t:'17:10',e:'18:00',c:'len',n:'Texto periodístico: práctica',g:['Intención','Cohesión'],id:'len-texto'},
-  ]},
-  {label:'Jue',sub:'Ondas + Tecnología',s:[
-    {t:'08:30',e:'09:30',c:'fis',n:'MAS: cinemática y energía',g:['Período','Amplitud'],id:'fis-mas'},
-    {t:'09:40',e:'10:40',c:'tec',n:'Resistencia de materiales',g:['Tracción','Flexión'],id:'tec-mecan'},
-    {t:'10:40',e:'11:00',b:'Descanso'},
-    {t:'11:00',e:'12:00',c:'len',n:'Análisis sintáctico avanzado',g:['Subordinadas sustantivas'],id:'len-sintaxis'},
-    {t:'12:00',e:'13:00',c:'fis',n:'Ecuación de onda + estacionarias',g:['Problemas'],id:'fis-ondas'},
-    {t:'13:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:00',c:'tec',n:'Transmisión de movimiento',g:['Engranajes','Poleas'],id:'tec-mecan'},
-    {t:'17:10',e:'18:00',c:'ing',n:'Use of English: condicionales',g:['Type 0,1,2,3'],id:'ing-grammar'},
-  ]},
-  {label:'Vie',sub:'Nietzsche + cálculo',s:[
-    {t:'08:30',e:'09:30',c:'fis',n:'Ondas EM, espectro y óptica',g:['Reflexión','Refracción'],id:'fis-ondas'},
-    {t:'09:40',e:'10:40',c:'fil',n:'Nietzsche: nihilismo y voluntad de poder',g:['Superhombre','Eterno retorno'],id:'fil-nietzsche'},
-    {t:'10:40',e:'11:00',b:'Descanso'},
-    {t:'11:00',e:'12:00',c:'mat',n:'Integrales y áreas entre curvas',g:['Definida','Técnicas'],id:'mat-calculo'},
-    {t:'12:00',e:'13:00',c:'fis',n:'Problemas ondas cronometrados',g:['PAU Andalucía'],id:'fis-ondas'},
-    {t:'13:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:00',c:'len',n:'Literatura s.XX: Generación del 27',g:['Lorca','Alberti'],id:'len-literatura'},
-    {t:'17:10',e:'18:00',c:'fil',n:'Texto Nietzsche: práctica comentario',g:['Estructura'],id:'fil-nietzsche'},
-  ]},
-  {label:'Sáb',sub:'Ortega + circuitos',s:[
-    {t:'09:00',e:'10:00',c:'fil',n:'Ortega: razón vital y perspectivismo',g:['Yo + circunstancia','Masas'],id:'fil-ortega'},
-    {t:'10:10',e:'11:10',c:'tec',n:'Circuitos eléctricos: Kirchhoff',g:['Mallas','Nodos'],id:'tec-elec'},
-    {t:'11:10',e:'11:30',b:'Descanso'},
-    {t:'11:30',e:'12:30',c:'ing',n:'Writing: opinion essay completo',g:['Estructura','Conectores'],id:'ing-writing'},
-    {t:'12:30',e:'13:30',c:'fil',n:'Los 4 autores: esquema comparativo',g:['Platón','Descartes','Nietzsche','Ortega'],id:'fil-ortega'},
-    {t:'13:30',e:'23:59',b:'Tarde libre — descansa bien'},
-  ]},
-  {label:'Dom',sub:'Física moderna',s:[
-    {t:'09:00',e:'10:00',c:'fis',n:'Relatividad especial',g:['Tiempo','Masa-energía'],id:'fis-moderna'},
-    {t:'10:10',e:'11:10',c:'mat',n:'Geometría analítica 3D',g:['Rectas','Planos','Distancias'],id:'mat-geom'},
-    {t:'11:10',e:'11:30',b:'Descanso'},
-    {t:'11:30',e:'12:30',c:'fis',n:'Efecto fotoeléctrico + De Broglie',g:['Cuántica','Fotones'],id:'fis-moderna'},
-    {t:'12:30',e:'13:30',c:'len',n:'Narrativa posguerra + contemporánea',g:['Obras clave'],id:'len-literatura'},
-    {t:'13:30',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:00',c:'fis',n:'Nuclear: fisión, fusión, radiactividad',g:['Energía enlace'],id:'fis-moderna'},
-    {t:'17:10',e:'18:00',c:'mat',n:'Problemas geometría exámenes',g:['Cronometrado'],id:'mat-geom'},
-  ]},
-  {label:'Lun',sub:'Estadística + automatismos',s:[
-    {t:'08:30',e:'09:30',c:'mat',n:'Distribución Normal y Binomial',g:['Novedad 2026','Tablas'],id:'mat-stats'},
-    {t:'09:40',e:'10:40',c:'tec',n:'Automatismos y control',g:['Lazo cerrado','PID'],id:'tec-auto'},
-    {t:'10:40',e:'11:00',b:'Descanso'},
-    {t:'11:00',e:'12:00',c:'ing',n:'Listening + use of English',g:['Reported speech','Pasiva'],id:'ing-grammar'},
-    {t:'12:00',e:'13:00',c:'mat',n:'Bayes + probabilidad condicionada',g:['Tablas contingencia'],id:'mat-stats'},
-    {t:'13:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:00',c:'tec',n:'Puertas lógicas y electrónica',g:['Diodo','Transistor'],id:'tec-elec'},
-    {t:'17:10',e:'18:00',c:'len',n:'Ortografía: tildes y puntuación',g:['10 min diarios'],id:'len-texto'},
-  ]},
-  {label:'Mar',sub:'Consolidar todo',s:[
-    {t:'08:30',e:'09:30',c:'len',n:'Texto + tipos textuales + pragmática',g:['Registro','Intención'],id:'len-texto'},
-    {t:'09:40',e:'10:40',c:'fil',n:'Repasar 4 autores + texto tipo PAU',g:['Comentario completo'],id:'fil-platon'},
-    {t:'10:40',e:'11:00',b:'Descanso'},
-    {t:'11:00',e:'12:00',c:'tec',n:'Fluidos: hidráulica y neumática',g:['Cilindros','Válvulas'],id:'tec-auto'},
-    {t:'12:00',e:'13:00',c:'ing',n:'Examen modelo inglés (parcial)',g:['Reading + writing'],id:'ing-reading'},
-    {t:'13:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:30',c:'mat',n:'Repaso estadística + integrales',g:['Fallos comunes'],id:'mat-stats'},
-    {t:'17:40',e:'18:30',c:'fis',n:'Repasar errores de la semana',g:['Corrección'],id:'fis-grav'},
-  ]},
-  {label:'Mié',sub:'Repaso 1 — exámenes completos',s:[
-    {t:'08:30',e:'10:00',c:'fis',n:'EXAMEN FÍSICA completo',g:['Cronometrado 90 min','PAU real'],id:'fis-grav'},
-    {t:'10:00',e:'10:30',b:'Descanso + corrección'},
-    {t:'10:30',e:'12:00',c:'mat',n:'EXAMEN MATES completo',g:['Cronometrado 90 min','PAU real'],id:'mat-algebra'},
-    {t:'12:00',e:'16:00',b:'Comida y descanso largo'},
-    {t:'16:00',e:'17:30',c:'ing',n:'EXAMEN INGLÉS completo',g:['Cronometrado 90 min'],id:'ing-reading'},
-    {t:'17:40',e:'18:30',c:'fis',n:'Corrección y análisis de errores',g:['Apuntar fallos'],id:'fis-grav'},
-  ]},
-  {label:'Jue',sub:'Repaso 2 — lengua y filo',s:[
-    {t:'08:30',e:'10:00',c:'fil',n:'Simular examen Filosofía completo',g:['Comentario texto','4 autores'],id:'fil-platon'},
-    {t:'10:00',e:'10:30',b:'Descanso'},
-    {t:'10:30',e:'12:00',c:'len',n:'Simular examen Lengua completo',g:['Cronometrado 90 min'],id:'len-texto'},
-    {t:'12:00',e:'16:00',b:'Comida y descanso'},
-    {t:'16:00',e:'17:00',c:'tec',n:'Corrección fallos Tecnología',g:['Fórmulas clave'],id:'tec-mecan'},
-    {t:'17:10',e:'18:00',c:'mat',n:'Repasar estadística + geometría',g:['Puntos débiles'],id:'mat-stats'},
-  ]},
-  {label:'Vie',sub:'Víspera — solo repaso suave',s:[
-    {t:'09:00',e:'10:00',c:'fis',n:'Esquemas y fórmulas física',g:['Sin problemas nuevos'],id:'fis-grav'},
-    {t:'10:10',e:'11:00',c:'fil',n:'Ideas clave de los 4 autores',g:['Fichas mentales'],id:'fil-platon'},
-    {t:'11:00',e:'11:30',b:'Descanso'},
-    {t:'11:30',e:'12:30',c:'mat',n:'Fórmulas y casos tipo',g:['Sin exámenes nuevos'],id:'mat-algebra'},
-    {t:'12:30',e:'13:00',c:'len',n:'Ortografía y vocabulario final',g:['Tildes'],id:'len-texto'},
-    {t:'13:00',e:'16:00',b:'Comida tranquila'},
-    {t:'16:00',e:'17:00',c:'des',n:'Preparar material para mañana',g:['Bolígrafos','DNI','Calculadora']},
-    {t:'21:00',e:'22:30',b:'Dormir pronto 🌙 Mañana es el día'},
-  ]},
+// DÍA 1 — Lo que ya tiene avanzado de físca/mates/lengua, consolidar
+{label:'Lun',sub:'Física completa + repaso álgebra',s:[
+{t:'08:30',e:'09:30',c:'fis',n:'Campo gravitatorio + Kepler',g:['Problemas','Fórmulas'],preCompleted:true,
+desc:'Ya tienes esto trabajado. Repasa rápido las fórmulas clave y haz 1 problema de órbitas para confirmar que lo tienes.',
+topics:['F=GMm/r², g=GM/r²','Energía orbital: Et = -GMm/2r','Velocidad orbital: v=√(GM/r)','3ª ley de Kepler: T²/r³=cte'],
+tip:'Si lo tienes sólido, dedica 20 min y pasa al siguiente bloque.'},
+{t:'09:40',e:'10:40',c:'mat',n:'Álgebra: matrices y sistemas',g:['Cramer','Gauss'],preCompleted:true,
+desc:'Ya tienes esto trabajado. Repaso rápido: haz un sistema con parámetro y comprueba que sabes discutirlo.',
+topics:['Sistema con parámetro λ: cuándo es CDs, CDi, CI','Regla de Cramer','Gauss para discutir','Rango de la matriz ampliad'],
+tip:'Dedica 20-25 min. Si sale bien, es tiempo ganado para los bloques pendientes.'},
+{t:'10:40',e:'11:00',b:'Descanso · Snack 🍎'},
+{t:'11:00',e:'12:00',c:'fis',n:'Campo eléctrico y potencial',g:['Coulomb','Trabajo eléctrico'],preCompleted:true,
+desc:'Ya tienes esto trabajado. Haz 2 problemas de exámenes PAU para confirmar que no se te escapa nada.',
+topics:['E=kq/r² (vectorial)','V=kq/r (escalar, superposición directa)','Trabajo: W=q·ΔV','Movimiento de carga en campo uniforme'],
+tip:'El potencial es escalar — sumas directamente. El campo es vectorial — usa componentes x e y.'},
+{t:'12:00',e:'13:00',c:'fis',n:'Campo magnético + Lorentz + inducción',g:['Lorentz','Faraday'],preCompleted:true,
+desc:'Ya tienes esto trabajado. Haz un problema completo de inducción cronometrado.',
+topics:['F=qv×B (regla mano derecha)','Movimiento circular: r=mv/qB','Flujo: Φ=B·S·cosθ','Faraday: ε=-ΔΦ/Δt','Ley de Lenz'],
+tip:''},
+{t:'13:00',e:'16:00',b:'🍽 Comida y descanso'},
+{t:'16:00',e:'17:30',c:'mat',n:'Derivadas y optimización',g:['Regla cadena','Optimización'],
+desc:'Un bloque crucial que necesita consolidación. Método para optimización: función objetivo → ligadura → una variable → derivar → igualar a 0.',
+topics:['Regla de la cadena','Monotonía y extremos: f\'(x)=0','Problemas tipo: caja volumen máximo, valla, beneficio','Concavidad y puntos de inflexión'],
+tip:'Lee el enunciado dos veces. ¿Qué maximizas? ¿Qué restricción tienes? Expresa todo en una variable.'},
+{t:'17:30',e:'18:30',c:'len',n:'Comentario de texto (práctica)',g:['Práctica diaria'],preCompleted:true,
+desc:'Ya lo tienes encaminado. Haz un texto nuevo hoy para consolidar la estructura.',
+topics:['Tema en 1 frase concisa','Ideas principales y secundarias','Tipo textual e intención comunicativa','Valoración crítica personal: mínimo 5 líneas'],
+tip:'En 2026 hay un único texto sin elección. Cuantos más textos practiques, más seguro entras.'},
+]},
+
+// DÍA 2 — Filosofía completa + integrales + inglés
+{label:'Mar',sub:'Filosofía completa + integrales',s:[
+{t:'08:30',e:'09:30',c:'fil',n:'Platón: Ideas, caverna y política',g:['República','Conocimiento'],preCompleted:true,
+desc:'Ya tienes esto trabajado. Repaso en 30 min: escribe de memoria los 5 conceptos clave y practica el comentario.',
+topics:['Dualismo: mundo sensible vs inteligible (Ideas)','Doxa (opinión) vs episteme (conocimiento verdadero)','Mito de la caverna — significado filosófico y político','Alma tripartita y la República'],
+tip:'Ya lo sabes. Gasta 30 min confirmando y pasa a Descartes.'},
+{t:'09:40',e:'10:40',c:'fil',n:'Descartes: cogito, método y dualismo',g:['Método','Racionalismo'],preCompleted:true,
+desc:'Ya tienes esto trabajado. Repaso en 30 min y haz un esquema comparativo con Platón.',
+topics:['4 reglas del método','Duda metódica y cogito ergo sum','Res cogitans vs res extensa','Conexión con Platón: ambos racionalistas, ambos dualistas'],
+tip:'Diferencia clave Platón/Descartes: reminiscencia (Platón) vs deducción (Descartes).'},
+{t:'10:40',e:'11:00',b:'Descanso'},
+{t:'11:00',e:'12:30',c:'fil',n:'Nietzsche: nihilismo, voluntad de poder',g:['Superhombre','Eterno retorno'],
+desc:'Este autor necesita más trabajo. Sus textos son poéticos — aprende a traducir las metáforas a lenguaje filosófico claro.',
+topics:['Moral del señor (activa) vs esclavo (resentimiento)','Nihilismo pasivo vs activo (transmutación de valores)','Muerte de Dios: crisis de los valores absolutos','Voluntad de poder: fuerza vital creadora','Eterno retorno: aceptación radical de la vida','Superhombre: creador de nuevos valores'],
+tip:'"Muerte de Dios" no es literal — es la crisis de los valores absolutos occidentales. Nietzsche critica directamente a Platón (dos mundos) y Descartes (primacía razón).'},
+{t:'12:30',e:'13:30',c:'fil',n:'Ortega: razón vital y perspectivismo',g:['Yo + circunstancia','Masas'],
+desc:'El filósofo español. Sus ideas son las más accesibles pero hay que dominarlas bien para el comentario.',
+topics:['Razón vital: ni racionalismo puro ni vitalismo','Perspectivismo: cada perspectiva es parte de la verdad','Yo+circunstancia: "si no la salvo a ella, no me salvo yo"','Hombre-masa (pasivo, sin obligaciones) vs minoría selecta','Teoría de las generaciones: cada 15 años'],
+tip:'Ortega se relaciona con Nietzsche: ambos critican el racionalismo puro. Diferencia: Ortega propone la razón vital como síntesis, no la elimina.'},
+{t:'13:30',e:'16:00',b:'🍽 Comida y descanso'},
+{t:'16:00',e:'17:30',c:'mat',n:'Integrales y áreas entre curvas',g:['Barrow','Áreas'],
+desc:'Bloque importante de matemáticas que hay que trabajar bien.',
+topics:['Primitivas inmediatas: xⁿ, eˣ, 1/x, sen x, cos x','Por partes: ∫u dv = uv - ∫v du (orden ILATE)','Cambio de variable','Regla de Barrow para integral definida','Área: ∫|f(x)-g(x)|dx entre puntos de corte'],
+tip:'En áreas: primero iguala las funciones para los puntos de corte. Integra superior menos inferior. Si se cruzan, divide en tramos.'},
+{t:'17:40',e:'18:30',c:'ing',n:'Reading + vocabulario temático',g:['Medio ambiente','Tecnología'],preCompleted:true,
+desc:'Ya tienes esto encaminado. Lee un texto nuevo y practica True/False subrayando la justificación.',
+topics:['Not stated = no aparece en el texto (aunque parezca lógico)','Vocabulario: climate change, carbon footprint, AI, cybersecurity','Skimming + scanning antes de las preguntas'],
+tip:''},
+]},
+
+// DÍA 3 — MAS/Ondas + Geometría + Lengua
+{label:'Mié',sub:'Ondas + Geometría + Lengua',s:[
+{t:'08:30',e:'09:30',c:'fis',n:'MAS: cinemática y energía',g:['Período','Amplitud'],
+desc:'El MAS es la base de toda la parte de ondas y uno de los bloques más frecuentes en PAU.',
+topics:['x(t)=A·cos(ωt+φ₀)','v(t)=-Aω·sen(ωt+φ₀)','a(t)=-ω²·x (siempre opuesta al desplazamiento)','Período: péndulo T=2π√(L/g), muelle T=2π√(m/k)','Et=½kA²=constante'],
+tip:'Fase inicial φ₀: si empieza en el extremo φ₀=0; si empieza en el equilibrio φ₀=π/2.'},
+{t:'09:40',e:'10:40',c:'fis',n:'Ecuación de onda + ondas estacionarias',g:['Ondas estacionarias','Armónicos'],
+desc:'La ecuación de onda conecta el MAS con la propagación. Las ondas en cuerdas y tubos son muy frecuentes.',
+topics:['y(x,t)=A·sen(kx-ωt+φ)','k=2π/λ, ω=2π/T, v=λ·f','Cuerda: λₙ=2L/n','Tubo abierto: λₙ=2L/n (todos armónicos)','Tubo cerrado: λₙ=4L/(2n-1) (solo impares)'],
+tip:'Dibuja siempre la cuerda o el tubo con nodos y vientres antes de calcular.'},
+{t:'10:40',e:'11:00',b:'Descanso'},
+{t:'11:00',e:'12:00',c:'mat',n:'Geometría analítica 3D',g:['Rectas','Planos','Distancias'],
+desc:'La geometría analítica es sistemática. Aprende el método paso a paso y úsalo siempre igual.',
+topics:['Recta: r = P + t·d (vectorial, paramétrica, simétrica)','Plano: Ax+By+Cz+D=0','Posición relativa: secantes, paralelas, coincidentes, cruzadas','Distancia punto-plano: d=|Ax₀+By₀+Cz₀+D|/√(A²+B²+C²)','Producto vectorial: perpendicular a los dos vectores'],
+tip:'El producto vectorial te da el vector normal a un plano — fundamental cuando te dan dos rectas que pasan por él.'},
+{t:'12:00',e:'13:00',c:'len',n:'Análisis sintáctico avanzado',g:['Subordinadas sustantivas'],preCompleted:true,
+desc:'Ya tienes esto encaminado. Practica identificando el tipo de subordinada y su función.',
+topics:['Sustantiva de sujeto: "Que llegues tarde me molesta" → sustituye por "eso"','Sustantiva de CD: "Dijo que vendría"','Adjetiva: "El libro que leí" → sustituye por "el cual"','Adverbial causal/final/condicional/concesiva'],
+tip:''},
+{t:'13:00',e:'16:00',b:'🍽 Comida y descanso'},
+{t:'16:00',e:'17:00',c:'fis',n:'Ondas EM y óptica',g:['Snell','Lentes'],
+desc:'Complemento de ondas. Los problemas de lentes tienen un método muy sistemático.',
+topics:['Ley de Snell: n₁·senθ₁=n₂·senθ₂','Ecuación lentes: 1/f=1/v-1/u','Aumento: m=-v/u','Reflexión total interna: θ>θ_crítico'],
+tip:'Define el convenio de signos antes de empezar: distancias a la derecha positivas.'},
+{t:'17:10',e:'18:30',c:'mat',n:'Estadística: Normal y Binomial',g:['Novedad 2026','Tabla Z'],
+desc:'Gran novedad de la PAU 2026. Prioridad máxima si no la has trabajado bien.',
+topics:['Binomial: P(X=k)=C(n,k)·pᵏ·(1-p)^(n-k); μ=np, σ²=np(1-p)','Normal: tipificación Z=(X-μ)/σ','La tabla da P(Z<z); para P(Z>z) usa 1-P(Z<z)','Intervalo de confianza: x̄ ± z·σ/√n','Bayes: P(Bᵢ|A)=P(A|Bᵢ)·P(Bᵢ)/P(A)'],
+tip:'Para la Normal: SIEMPRE tipifica primero. Dibuja la campana y sombrea la región que pide el enunciado.'},
+]},
+
+// DÍA 4 — Física moderna + Filosofía repaso + Inglés
+{label:'Jue',sub:'Física moderna + repaso Filosofía',s:[
+{t:'08:30',e:'09:30',c:'fis',n:'Relatividad especial',g:['Dilatación','E=mc²'],
+desc:'Bloque teórico-conceptual con cálculos directos. Entiende el significado físico antes que las fórmulas.',
+topics:['Dilatación temporal: Δt=γ·Δt₀','Contracción espacial: L=L₀/γ','Factor de Lorentz: γ=1/√(1-(v/c)²)','Equivalencia masa-energía: E=mc²'],
+tip:'Lo más habitual en PAU: calcular tiempo que mide observador en reposo dado el tiempo propio.'},
+{t:'09:40',e:'10:40',c:'fis',n:'Efecto fotoeléctrico + física nuclear',g:['Fotones','Fisión','Fusión'],
+desc:'Cuántica y nuclear en una sesión. Ambos tienen cálculos directos con las fórmulas.',
+topics:['E_fotón=hf=φ+Ec_max','Si f<f₀ → NO hay efecto independientemente de la intensidad','Radiactividad: α, β, γ; ley N(t)=N₀·e^(-λt)','Defecto de masa Δm → E=Δm·c² (1 uma=931.5 MeV)','Fisión: núcleo pesado se divide; Fusión: núcleos ligeros se unen'],
+tip:'Para calcular energía de reacción nuclear: suma masas reactivos - suma masas productos = Δm → multiplica por 931.5 MeV/uma.'},
+{t:'10:40',e:'11:00',b:'Descanso'},
+{t:'11:00',e:'12:30',c:'fil',n:'Los 4 autores: esquema comparativo global',g:['Platón','Descartes','Nietzsche','Ortega'],
+desc:'Sesión clave para el examen de Filosofía. Construye el mapa de relaciones entre los 4 autores.',
+topics:['Razón: Platón (Ideas) → Descartes (cogito) ← critica Nietzsche → Ortega (razón vital)','Conocimiento: reminiscencia (Platón) / deducción (Descartes) / perspectivismo (Ortega)','Moral: el Bien de Platón ← critica Nietzsche (transmutación)','Individuo/sociedad: República (Platón) / Masas (Ortega)'],
+tip:'Las preguntas de relación entre autores son cada vez más frecuentes. Este mapa es tu mejor preparación.'},
+{t:'12:30',e:'13:30',c:'fil',n:'Texto filosófico: práctica comentario',g:['Comentario completo'],
+desc:'Practica con un texto de Nietzsche u Ortega — los dos que más necesitas trabajar.',
+topics:['Estructura: 1) ¿De qué trata el fragmento? 2) Ideas y conexión con el sistema del autor 3) Relación con otro autor 4) Valoración crítica personal','Textos habituales Nietzsche: Zaratustra, Genealogía de la moral','Textos habituales Ortega: La rebelión de las masas'],
+tip:''},
+{t:'13:30',e:'16:00',b:'🍽 Comida y descanso'},
+{t:'16:00',e:'17:00',c:'ing',n:'Use of English: condicionales + pasiva',g:['Condicionales','Pasiva'],
+desc:'Los dos contenidos gramaticales que más aparecen en el Use of English.',
+topics:['Type 1: If+present → will+inf (futuro probable)','Type 2: If+past simple → would+inf (hipotético presente)','Type 3: If+past perfect → would have+pp (pasado irreal)','Pasiva: objeto → sujeto + to be + participio','Verbos opinión: "He is thought to be..." / "It is said that..."'],
+tip:'Identifica si la situación es probable (1), irreal presente (2) o irreal pasado (3). Eso determina el tipo.'},
+{t:'17:10',e:'18:30',c:'ing',n:'Writing: opinion essay completo',g:['Estructura','Conectores'],
+desc:'Escribe un essay completo de 150 palabras. Cronometra 25 minutos.',
+topics:['Párrafo 1: gancho (pregunta retórica o dato) + tesis clara','Párrafo 2: argumento principal + ejemplo','Párrafo 3: otro argumento o contraargumento','Párrafo 4: conclusión con restatement de la tesis','Conectores: Furthermore, However, Therefore, In conclusion'],
+tip:'No empieces con "I think". Usa un gancho. Cuenta las palabras: menos de 120 → amplía; más de 180 → recorta.'},
+]},
+
+// DÍA 5 — SIMULACROS COMPLETOS
+{label:'Vie',sub:'Simulacros completos × 2',s:[
+{t:'08:30',e:'10:00',c:'fis',n:'EXAMEN FÍSICA COMPLETO',g:['Cronometrado 90 min','PAU real'],
+desc:'Simula las condiciones reales. Sin apuntes ni notas. Solo calculadora y formulario.',
+topics:['Descarga examen PAU Física Andalucía 2024 o 2023 en fisicaygalf.com','Elige entre opción A y B como harías el día real','18 min por problema','Nada en blanco — escribe lo que sabes aunque sea incompleto'],
+tip:'Los puntos parciales pueden salvarte. Nunca dejes un apartado completamente vacío.'},
+{t:'10:00',e:'10:30',b:'☕ Descanso + corrección rápida física'},
+{t:'10:30',e:'12:00',c:'mat',n:'EXAMEN MATEMÁTICAS COMPLETO',g:['Cronometrado 90 min','PAU real'],
+desc:'Examen completo en condiciones reales. Muestra todos los pasos del cálculo.',
+topics:['22 min por ejercicio','Los pasos intermedios puntúan aunque el resultado sea incorrecto','Elige los optativos de los bloques que más domines'],
+tip:''},
+{t:'12:00',e:'16:00',b:'🍽 Comida y descanso largo — lo necesitas'},
+{t:'16:00',e:'17:30',c:'fil',n:'SIMULAR EXAMEN FILOSOFÍA',g:['90 min','PAU real'],
+desc:'Examen completo de Historia de la Filosofía en condiciones reales.',
+topics:['Estructura: 1) Análisis texto (4pts) 2) Tema del autor (3pts) 3) Relación y valoración (3pts)','90 minutos sin consultar apuntes','Bolígrafo — los tachones son preferibles al tipex'],
+tip:'Si te queda tiempo al final: revisa la valoración crítica, es donde más se diferencia una nota alta.'},
+{t:'17:30',e:'18:30',c:'fis',n:'Corrección y análisis de errores',g:['Análisis fallos'],
+desc:'Corrígete con las rúbricas oficiales. Anota los 3 errores más graves de cada asignatura.',
+topics:['Física: ¿en qué bloque pierdo más puntos?','Matemáticas: ¿errores de concepto o de cálculo?','Filosofía: ¿desarrollé bien la valoración crítica?'],
+tip:''},
+]},
+
+// DÍA 6 — Lengua completa + Inglés + correcciones
+{label:'Sáb',sub:'Lengua completa + Inglés + correcciones',s:[
+{t:'09:00',e:'10:30',c:'len',n:'SIMULAR EXAMEN LENGUA COMPLETO',g:['90 min','PAU real'],
+desc:'Simula el examen completo de Lengua en 90 minutos. Texto único, sin elección.',
+topics:['30 min comentario · 25 min sintáctico · 20 min literatura · 15 min revisión ortografía','Revisa TODAS las tildes antes de "entregar"','Letra legible, párrafos claros'],
+tip:'Los últimos 15 min dedícalos solo a revisar tildes y puntuación. Pueden salvarte hasta 2 puntos.'},
+{t:'10:30',e:'11:00',b:'Corrección examen Lengua'},
+{t:'11:00',e:'12:00',c:'ing',n:'EXAMEN INGLÉS COMPLETO',g:['90 min','PAU real'],
+desc:'Simula el examen completo de inglés en 90 minutos.',
+topics:['30 min reading · 20 min use of English · 35 min writing · 5 min revisión','Cuenta las palabras del writing','Revisa gramática en los últimos 5 minutos'],
+tip:''},
+{t:'12:00',e:'13:00',b:'☕ Corrección inglés'},
+{t:'13:00',e:'16:00',b:'🍽 Comida y descanso'},
+{t:'16:00',e:'17:30',c:'len',n:'Literatura + ortografía — fallos del simulacro',g:['Generación 27','Posguerra'],
+desc:'Trabaja los puntos débiles que hayas detectado en el simulacro de Lengua.',
+topics:['Generación del 27: Lorca, Alberti, Salinas, Guillén, Aleixandre + obras','Posguerra: Cela (Pascual Duarte), Laforet (Nada), Ferlosio (El Jarama)','Ortografía: tildes diacríticas él/el, tú/tu, sí/si, más/mas, mí/mi'],
+tip:'Aprende: autor + obra + 2 frases de contexto. No necesitas el argumento completo.'},
+{t:'17:30',e:'18:30',c:'mat',n:'Repaso estadística + geometría — fallos del simulacro',g:['Puntos débiles'],
+desc:'Vuelve a hacer los ejercicios que fallaste en el simulacro. Solo eso.',
+topics:['Si fallas en Normal: 5 tipificaciones más','Si fallas en geometría: distancia punto-plano de cabeza','Si fallas en integrales: por partes x3'],
+tip:'La diferencia entre un 7 y un 9 es no repetir los mismos errores.'},
+]},
+
+// DÍA 7 — Víspera
+{label:'Dom',sub:'Víspera — repaso suave y preparación',s:[
+{t:'09:00',e:'10:00',c:'fis',n:'Solo esquemas y fórmulas de física',g:['Sin ejercicios nuevos'],
+desc:'Hoy no se hacen ejercicios nuevos. Solo repasar lo que ya sabes.',
+topics:['Formulario completo: campos, ondas, moderna, nuclear','Los 3 conceptos que más te cuestan — solo leer'],
+tip:'Hacer ejercicios nuevos el día antes genera confusión. Confía en lo que llevas trabajado.'},
+{t:'10:10',e:'11:00',c:'fil',n:'Los 4 autores: repaso mental',g:['Fichas mentales'],
+desc:'Repasa mentalmente o en voz alta los 5 conceptos clave de cada autor.',
+topics:['Platón: Ideas, caverna, dualismo, episteme/doxa, República','Descartes: cogito, duda, método, res cogitans/extensa, Dios','Nietzsche: nihilismo, poder, superhombre, eterno retorno, muerte de Dios','Ortega: razón vital, perspectivismo, circunstancia, masas, generaciones'],
+tip:'Habla en voz alta. Explícatelo como si se lo explicaras a un amigo. Activa más el cerebro que leer.'},
+{t:'11:00',e:'11:30',b:'Descanso'},
+{t:'11:30',e:'12:30',c:'mat',n:'Hoja de fórmulas y casos tipo',g:['Sin exámenes nuevos'],
+desc:'Repasa tu hoja de fórmulas. Solo los casos tipo que tienes más flojos.',
+topics:['Álgebra: sistema con parámetro — casos','Optimización: los pasos del método','Geometría: distancia punto-plano de cabeza','Normal: tipificación Z de cabeza'],
+tip:''},
+{t:'12:30',e:'13:00',c:'len',n:'Ortografía final — 30 min',g:['Tildes diacríticas'],
+desc:'Solo las tildes diacríticas y la puntuación más conflictiva.',
+topics:['el/él, tu/tú, si/sí, mas/más, mi/mí, se/sé, te/té, aun/aún','Coma ante "pero" y "aunque" adversativos'],
+tip:''},
+{t:'13:00',e:'16:30',b:'🍽 Comida larga y tranquila'},
+{t:'16:30',e:'17:30',c:'des',n:'Preparar material para mañana',g:['DNI','Calculadora','Bolígrafos'],
+desc:'Prepara todo esta tarde, no mañana con prisas.',
+topics:['DNI o pasaporte vigente','2-3 bolígrafos azules o negros (no lápiz)','Calculadora científica con pilas revisadas','Confirmar sede y hora de presentación','Botella de agua, algo para comer entre exámenes'],
+tip:'Pon la alarma 90 minutos antes del primer examen. Come algo ligero. Llevas 7 días intensos. Confía. 💪'},
+{t:'21:00',e:'07:00',b:'🌙 Duerme pronto. Todo lo que podías hacer ya está hecho.'},
+]},
 ];
 
-const TEMARIO=[
-  {c:'fis',label:'Física',topics:[
-    {n:'Campo gravitatorio',id:'fis-grav',tag:'Alta'},
-    {n:'Campo eléctrico y magnético',id:'fis-elec',tag:'Alta'},
-    {n:'Inducción electromagnética',id:'fis-mag',tag:'Alta'},
-    {n:'MAS y vibraciones',id:'fis-mas',tag:'Alta'},
-    {n:'Ondas y fenómenos ondulatorios',id:'fis-ondas',tag:'Alta'},
-    {n:'Física moderna (relatividad, cuántica, nuclear)',id:'fis-moderna',tag:'Media'},
-  ]},
-  {c:'fil',label:'Filosofía',topics:[
-    {n:'Platón',id:'fil-platon',tag:'Alta'},
-    {n:'Descartes',id:'fil-descartes',tag:'Alta'},
-    {n:'Nietzsche',id:'fil-nietzsche',tag:'Alta'},
-    {n:'Ortega y Gasset',id:'fil-ortega',tag:'Alta'},
-  ]},
-  {c:'tec',label:'Tecnología e Ingeniería',topics:[
-    {n:'Sistemas mecánicos y resistencia de materiales',id:'tec-mecan',tag:'Alta'},
-    {n:'Circuitos y electrónica',id:'tec-elec',tag:'Alta'},
-    {n:'Automatización y control',id:'tec-auto',tag:'Media'},
-  ]},
-  {c:'mat',label:'Matemáticas II',topics:[
-    {n:'Álgebra lineal',id:'mat-algebra',tag:'Alta'},
-    {n:'Análisis y cálculo',id:'mat-calculo',tag:'Alta'},
-    {n:'Geometría analítica 3D',id:'mat-geom',tag:'Alta'},
-    {n:'Estadística y probabilidad',id:'mat-stats',tag:'★ Novedad'},
-  ]},
-  {c:'len',label:'Lengua Castellana',topics:[
-    {n:'Comprensión y comentario de texto',id:'len-texto',tag:'Alta'},
-    {n:'Análisis sintáctico',id:'len-sintaxis',tag:'Alta'},
-    {n:'Literatura española s.XX-XXI',id:'len-literatura',tag:'Media'},
-  ]},
-  {c:'ing',label:'Inglés',topics:[
-    {n:'Reading comprehension',id:'ing-reading',tag:'Alta'},
-    {n:'Writing (opinion essay / email)',id:'ing-writing',tag:'Alta'},
-    {n:'Use of English (grammar)',id:'ing-grammar',tag:'Alta'},
-  ]},
-];
+// ── STATE ──
+const CIRC=552.9;
+let S={currentDay:0,done:{},topicStatus:{},pomoMode:'focus',pomoRunning:false,pomoRemaining:1500,pomoTotal:1500,pomoSessions:0,pomoLog:[],pomoInterval:null,openSessions:{}};
 
-// ─── STATE ──────────────────────────────────────────────────────────────────
-let done=JSON.parse(localStorage.getItem('sel26_done')||'{}');
-let currentDay=parseInt(localStorage.getItem('sel26_day')||'0');
+function load(){
+  try{
+    const d=localStorage.getItem('sel26_7d');
+    if(d) Object.assign(S,JSON.parse(d));
+    // Pre-mark sessions that are already done based on screenshots
+    // Days 0,1 already had progress — mark preCompleted ones
+    [0,1].forEach(di=>{
+      if(!S.done[di]) S.done[di]={};
+      DAYS[di].s.forEach((s,si)=>{
+        if(s.preCompleted && S.done[di][si]===undefined) S.done[di][si]=true;
+      });
+    });
+  }catch(e){}
+}
+function save(){try{localStorage.setItem('sel26_7d',JSON.stringify({currentDay:S.currentDay,done:S.done,topicStatus:S.topicStatus,pomoSessions:S.pomoSessions,pomoLog:S.pomoLog}));}catch(e){}}
 
-function saveDone(){localStorage.setItem('sel26_done',JSON.stringify(done));}
-function saveDay(d){localStorage.setItem('sel26_day',String(d));}
-
-// ─── UTILS ──────────────────────────────────────────────────────────────────
-function getDur(s,e){
-  const[sh,sm]=s.split(':').map(Number);
-  const[eh,em]=e.split(':').map(Number);
-  const m=(eh*60+em)-(sh*60+sm);
-  if(m<=0||m>600)return'';
-  return m<60?m+'m':Math.floor(m/60)+'h'+(m%60?m%60+'m':'');
+// ── NAV ──
+function switchView(v,el){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  document.getElementById('v-'+v).classList.add('active');
+  el.classList.add('on');
+  if(v==='temario')renderTemario();
+  if(v==='progreso')renderProgreso();
 }
 
-// ─── CLOCK ──────────────────────────────────────────────────────────────────
-function updateClock(){
-  const n=new Date(),h=n.getHours(),m=n.getMinutes();
-  document.getElementById('clock').textContent=h+':'+(m<10?'0'+m:m);
-}
-updateClock();setInterval(updateClock,30000);
+// ── CLOCK ──
+function tick(){const n=new Date(),h=n.getHours(),m=n.getMinutes();document.getElementById('clock').textContent=h+':'+(m<10?'0'+m:m);}
+tick();setInterval(tick,15000);
 
-// ─── NAVIGATION ─────────────────────────────────────────────────────────────
-function goScreen(name,el){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sc-'+name).classList.add('active');
-  document.querySelectorAll('.nav-it').forEach(n=>n.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.nav-lb').forEach(l=>l.style.color='');
-  el.querySelector('.nav-lb').style.color='var(--acc2)';
-  if(name==='progreso')buildProgress();
-}
+// ── HORARIO ──
+function dur(s,e){const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number),m=(eh*60+em)-(sh*60+sm);if(m<=0||m>600)return'';if(m<60)return m+'m';const h=Math.floor(m/60),r=m%60;return r?h+'h'+r:'h'+h;}
 
-// ─── HORARIO ────────────────────────────────────────────────────────────────
-function buildDayScroller(){
-  const DAY_NAMES=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom','Lun','Mar','Mié','Jue','Vie'];
+function buildScroller(){
   const el=document.getElementById('day-scroller');
-  el.innerHTML=DAY_NAMES.map((l,i)=>`
-    <button class="day-btn${i===currentDay?' active':''}" onclick="selectDay(${i})">
-      <span class="d-num">${i+1}</span>
-      <span class="d-lbl">${l}</span>
-    </button>`).join('');
-  setTimeout(()=>{const a=el.querySelector('.active');if(a)a.scrollIntoView({inline:'center',behavior:'smooth'});},60);
+  el.innerHTML=DAY_NAMES.map((l,i)=>{
+    const dm=S.done[i]||{},total=DAYS[i].s.filter(s=>s.b===undefined).length,cnt=Object.values(dm).filter(Boolean).length;
+    const isDone=cnt>0&&cnt===total;
+    return`<button class="day-btn${i===S.currentDay?' on':''}${isDone&&i!==S.currentDay?' done-day':''}" onclick="selDay(${i})">
+      <span class="dn">${i+1}</span><span class="dl">${l}</span>${isDone?'<span class="dd">✓</span>':''}
+    </button>`;
+  }).join('');
+  setTimeout(()=>{const a=el.querySelector('.on');if(a)a.scrollIntoView({inline:'center',behavior:'smooth'});},60);
 }
 
-function selectDay(d){
-  currentDay=d;saveDay(d);
-  document.getElementById('days-left').textContent=Math.max(0,12-d);
-  buildDayScroller();buildSessions();updateProgress();
-}
+function selDay(d){S.currentDay=d;save();document.getElementById('days-left-n').textContent=Math.max(0,7-d);buildScroller();buildSessions();updateProg();}
 
 function buildSessions(){
-  const day=DAYS[currentDay];
-  document.getElementById('d-title').textContent='Día '+(currentDay+1);
+  const day=DAYS[S.currentDay];
+  document.getElementById('d-title').textContent='Día '+(S.currentDay+1);
   document.getElementById('d-sub').textContent=day.sub;
-  const key='d'+currentDay;
-  const dm=done[key]||{};
-  const el=document.getElementById('sessions');
-  el.innerHTML=day.s.map((s,i)=>{
-    if(s.b!==undefined)return`<div class="break-row" style="animation-delay:${i*.04}s"><div class="break-line"></div><div class="break-txt">${s.b}</div><div class="break-line"></div></div>`;
-    const isDone=!!dm[i];
-    const hasDetail=s.id&&SESSION_DETAIL[s.id];
-    return`<div class="session-card s-${s.c}${isDone?' done':''}" style="animation-delay:${i*.04}s">
-      <div class="time-col">
-        <div class="t-start">${s.t}</div>
-        <div class="t-end">${s.e}</div>
-        <div class="t-dur">${getDur(s.t,s.e)}</div>
+  const dm=S.done[S.currentDay]||{};
+  document.getElementById('sessions-list').innerHTML=day.s.map((s,i)=>{
+    if(s.b!==undefined)return`<div class="brk fade-up" style="animation-delay:${i*.04}s"><div class="brk-line"></div><div class="brk-txt">${s.b}</div><div class="brk-line"></div></div>`;
+    const done=!!dm[i],open=!!S.openSessions[S.currentDay+'_'+i],d=dur(s.t,s.e);
+    const links=(TEMARIO[s.c]?.topics||[]).flatMap(t=>t.links||[]).slice(0,2);
+    const preTag=s.preCompleted?`<span class="stag" style="background:rgba(29,158,117,.15);color:#1D9E75">✓ Ya hecho</span>`:'';
+    return`<div class="sc s-${s.c}${done?' done':''} fade-up" style="animation-delay:${i*.04}s">
+      <div class="sc-main" onclick="toggleExp(${i})">
+        <div class="sc-time"><div class="sc-ts">${s.t}</div><div class="sc-te">${s.e}</div>${d?`<div class="sc-dur">${d}</div>`:''}</div>
+        <div class="sc-info">
+          <div class="sj">${SUBJ_META[s.c]?.name||''}</div>
+          <div class="sn">${s.n}</div>
+          <div class="sc-tags">${preTag}${(s.g||[]).map(t=>`<span class="stag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="sc-actions">
+          ${s.desc||s.topics?`<button class="sc-expand-btn${open?' open':''}" onclick="event.stopPropagation();toggleExp(${i})">▾</button>`:''}
+          <div class="chk" onclick="event.stopPropagation();toggleDone(${i})">${done?'✓':''}</div>
+        </div>
       </div>
-      <div class="info-col" onclick="openModal(${currentDay},${i})">
-        <div class="s-subj">${SUBJ_NAMES[s.c]}</div>
-        <div class="s-name">${s.n}</div>
-        <div class="s-tags">${(s.g||[]).map(t=>`<span class="tag">${t}</span>`).join('')}${hasDetail?'<span class="tag" style="color:var(--acc2);border-color:rgba(167,139,250,0.3)">ver detalle →</span>':''}</div>
-      </div>
-      <div class="card-actions">
-        <div class="check" onclick="toggleDone(${i})">${isDone?'✓':''}</div>
-        ${hasDetail?`<div class="info-btn" onclick="openModal(${currentDay},${i})">ℹ</div>`:''}
-      </div>
+      ${s.desc||s.topics?`<div class="sc-detail${open?' open':''}" id="sd-${S.currentDay}-${i}">
+        ${s.desc?`<p class="sc-desc">${s.desc}</p>`:''}
+        ${s.topics?.length?`<h4>Qué estudiar exactamente</h4><div class="sc-topics">${s.topics.map(t=>`<div class="sc-topic">${t}</div>`).join('')}</div>`:''}
+        ${s.tip?`<div class="sc-tip">${s.tip}</div>`:''}
+        ${links.length?`<h4 style="margin-top:10px">Recursos online</h4><div class="sc-links">${links.map(l=>`<a class="sc-link" href="${l.u}" target="_blank"><span class="sc-link-title">${l.t}</span><span class="sc-link-arr">→</span></a>`).join('')}</div>`:''}
+      </div>`:''}
     </div>`;
   }).join('');
 }
 
+function toggleExp(i){
+  const k=S.currentDay+'_'+i;S.openSessions[k]=!S.openSessions[k];
+  const det=document.getElementById(`sd-${S.currentDay}-${i}`);
+  const btn=document.querySelector(`#sessions-list .sc:nth-child(${i+1}) .sc-expand-btn`);
+  if(det)det.classList.toggle('open',!!S.openSessions[k]);
+  // find the right button
+  document.querySelectorAll('.sc-expand-btn').forEach((b,idx)=>{if(idx===i)b.classList.toggle('open',!!S.openSessions[k]);});
+}
+
 function toggleDone(i){
-  const s=DAYS[currentDay].s[i];
-  if(!s||s.b!==undefined)return;
-  const key='d'+currentDay;
-  if(!done[key])done[key]={};
-  done[key][i]=!done[key][i];
-  saveDone();buildSessions();updateProgress();
+  if(!DAYS[S.currentDay].s[i]||DAYS[S.currentDay].s[i].b!==undefined)return;
+  if(!S.done[S.currentDay])S.done[S.currentDay]={};
+  S.done[S.currentDay][i]=!S.done[S.currentDay][i];
+  save();buildScroller();buildSessions();updateProg();
 }
 
-function updateProgress(){
-  const key='d'+currentDay;
-  const dm=done[key]||{};
-  const total=DAYS[currentDay].s.filter(s=>s.b===undefined).length;
-  const count=Object.values(dm).filter(Boolean).length;
-  const pct=total?Math.round(count/total*100):0;
-  document.getElementById('pct').textContent=pct+'%';
-  document.getElementById('prog').style.width=pct+'%';
+function updateProg(){
+  const dm=S.done[S.currentDay]||{},total=DAYS[S.currentDay].s.filter(s=>s.b===undefined).length,count=Object.values(dm).filter(Boolean).length,pct=total?Math.round(count/total*100):0;
+  document.getElementById('hor-pct').textContent=pct+'%';
+  document.getElementById('hor-prog').style.width=pct+'%';
 }
 
-// ─── MODAL ──────────────────────────────────────────────────────────────────
-let modalDay=-1,modalIdx=-1;
-
-function openModal(day,idx){
-  const s=DAYS[day].s[idx];
-  if(!s||s.b!==undefined)return;
-  const detail=s.id?SESSION_DETAIL[s.id]:null;
-  modalDay=day;modalIdx=idx;
-  const key='d'+day;
-  const isDone=!!(done[key]&&done[key][idx]);
-  // header
-  const mSubj=document.getElementById('m-subj');
-  mSubj.textContent=SUBJ_NAMES[s.c];
-  mSubj.className='modal-subj s-'+s.c+' modal-subj';
-  document.getElementById('m-title').textContent=s.n;
-  document.getElementById('m-meta').textContent=s.t+' – '+s.e+' · '+getDur(s.t,s.e);
-  // body
-  let html='';
-  if(detail){
-    html+=`<div class="modal-section"><div class="modal-section-title">Descripción</div><div class="modal-desc">${detail.desc}</div></div>`;
-    if(detail.topics&&detail.topics.length){
-      html+=`<div class="modal-section"><div class="modal-section-title">Qué estudiar exactamente</div><ul class="topic-list">${detail.topics.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
-    }
-    if(detail.tip){
-      html+=`<div class="modal-section"><div class="tip-box"><strong>💡 Consejo clave:</strong> ${detail.tip}</div></div>`;
-    }
-    if(detail.links&&detail.links.length){
-      html+=`<div class="modal-section"><div class="modal-section-title">Recursos y ejercicios</div><div class="link-list">${detail.links.map(l=>`<a class="ext-link" href="${l.url}" target="_blank" rel="noopener"><span class="link-icon">${l.icon||'🔗'}</span><div class="link-info"><div class="link-name">${l.name}</div><div class="link-url">${l.url.replace('https://','').split('/')[0]}</div></div><span class="link-arrow">→</span></a>`).join('')}</div></div>`;
-    }
-  } else {
-    html+=`<div class="modal-section"><div class="modal-desc">Sesión de práctica. Usa los exámenes reales de la PAU Andalucía y cronométrate. Recuerda: la PAU se aprueba haciendo exámenes, no leyendo teoría.</div></div>`;
-    html+=`<div class="modal-section"><div class="tip-box"><strong>💡 Consejo:</strong> Para esta sesión practica con exámenes de convocatorias anteriores. Descárgalos en <a href="https://www.educalive.com/examenes-selectividad-andalucia" target="_blank" style="color:var(--acc2)">educalive.com</a>.</div></div>`;
-  }
-  html+=`<button class="modal-done-btn" onclick="toggleFromModal()">${isDone?'✅ Marcar como pendiente':'✓ Marcar como completada'}</button>`;
-  document.getElementById('m-body').innerHTML=html;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function toggleFromModal(){
-  if(modalDay<0||modalIdx<0)return;
-  toggleDone(modalIdx);
-  closeModal();
-}
-
-function closeModal(e){
-  if(e&&e.target!==document.getElementById('modal-overlay'))return;
-  document.getElementById('modal-overlay').classList.remove('open');
-  modalDay=-1;modalIdx=-1;
-}
-
-// ─── TEMARIO ────────────────────────────────────────────────────────────────
-function buildTemario(){
-  const el=document.getElementById('subj-list');
-  el.innerHTML=TEMARIO.map((subj,si)=>`
-    <div class="subj-header" id="sh-${si}" onclick="toggleSubj(${si})">
-      <div class="subj-dot" style="background:${SUBJ_COLORS[subj.c]}"></div>
-      <div class="subj-header-name">${subj.label}</div>
-      <div class="subj-count">${subj.topics.length} temas</div>
-      <div class="subj-chevron">›</div>
-    </div>
-    <div class="topic-items" id="ti-${si}">
-      ${subj.topics.map(t=>`
-        <div class="topic-item" onclick="openTopicModal('${t.id}','${subj.c}','${t.n}')">
-          <div class="topic-item-dot" style="background:${SUBJ_COLORS[subj.c]}"></div>
-          <div class="topic-item-name">${t.n}</div>
-          <div class="topic-item-tag" style="color:${t.tag.includes('★')?'#EF9F27':''};">${t.tag}</div>
-        </div>`).join('')}
-    </div>`).join('');
-}
-
-function toggleSubj(si){
-  const h=document.getElementById('sh-'+si);
-  h.classList.toggle('open');
-}
-
-function openTopicModal(id,c,name){
-  const detail=SESSION_DETAIL[id];
-  if(!detail)return;
-  const mSubj=document.getElementById('m-subj');
-  mSubj.textContent=SUBJ_NAMES[c];
-  mSubj.className='modal-subj s-'+c+' modal-subj';
-  document.getElementById('m-title').textContent=name;
-  document.getElementById('m-meta').textContent='Temario completo';
-  let html='';
-  html+=`<div class="modal-section"><div class="modal-section-title">Descripción</div><div class="modal-desc">${detail.desc}</div></div>`;
-  if(detail.topics&&detail.topics.length){
-    html+=`<div class="modal-section"><div class="modal-section-title">Qué estudiar exactamente</div><ul class="topic-list">${detail.topics.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
-  }
-  if(detail.tip){
-    html+=`<div class="modal-section"><div class="tip-box"><strong>💡 Consejo clave:</strong> ${detail.tip}</div></div>`;
-  }
-  if(detail.links&&detail.links.length){
-    html+=`<div class="modal-section"><div class="modal-section-title">Recursos y ejercicios</div><div class="link-list">${detail.links.map(l=>`<a class="ext-link" href="${l.url}" target="_blank" rel="noopener"><span class="link-icon">${l.icon||'🔗'}</span><div class="link-info"><div class="link-name">${l.name}</div><div class="link-url">${l.url.replace('https://','').split('/')[0]}</div></div><span class="link-arrow">→</span></a>`).join('')}</div></div>`;
-  }
-  document.getElementById('m-body').innerHTML=html;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-// ─── POMODORO ────────────────────────────────────────────────────────────────
-const POMO_CFG={work:25,short:5,long:20};
-let pomoMode='work',pomoRunning=false,pomoSeconds=0,pomoTotal=0,pomoTimer=null;
-let pomoCount=parseInt(localStorage.getItem('sel26_pomo')||'0');
-let pomoToday=parseInt(localStorage.getItem('sel26_pomoday')||'0');
-
-function setMode(m){
-  if(pomoRunning)return;
-  pomoMode=m;
-  ['work','short','long'].forEach(k=>{
-    document.getElementById('pm-'+k).classList.toggle('active',k===m);
-  });
-  resetPomo();
-}
-
-function adjustTime(k,delta){
-  const min=k==='short'?1:5,max=k==='work'?60:k==='short'?15:45;
-  POMO_CFG[k]=Math.max(min,Math.min(max,POMO_CFG[k]+delta));
-  document.getElementById('cfg-'+k).textContent=POMO_CFG[k];
-  if(k===pomoMode&&!pomoRunning)resetPomo();
-}
-
-function resetPomo(){
-  clearInterval(pomoTimer);pomoRunning=false;
-  pomoSeconds=POMO_CFG[pomoMode]*60;pomoTotal=pomoSeconds;
-  updatePomoDisplay();
-  document.getElementById('pomo-playbtn').textContent='▶';
-  document.getElementById('pomo-label').textContent='Listo para empezar';
-}
-
-function pomoToggle(){
-  if(pomoRunning){
-    clearInterval(pomoTimer);pomoRunning=false;
-    document.getElementById('pomo-playbtn').textContent='▶';
-    document.getElementById('pomo-label').textContent='En pausa';
-  } else {
-    pomoRunning=true;
-    document.getElementById('pomo-playbtn').textContent='⏸';
-    const labels={work:'Estudiando... 🧠',short:'Descansando ☕',long:'Descansando largo 🛋'};
-    document.getElementById('pomo-label').textContent=labels[pomoMode];
-    pomoTimer=setInterval(()=>{
-      pomoSeconds--;
-      updatePomoDisplay();
-      if(pomoSeconds<=0){
-        clearInterval(pomoTimer);pomoRunning=false;
-        if(pomoMode==='work'){
-          pomoCount++;pomoToday++;
-          localStorage.setItem('sel26_pomo',pomoCount);
-          localStorage.setItem('sel26_pomoday',pomoToday);
-          document.getElementById('pomo-count').textContent=pomoCount;
-          document.getElementById('pomo-today').textContent=pomoToday;
-        }
-        document.getElementById('pomo-label').textContent=pomoMode==='work'?'¡Sesión completada! 🎉':'¡Descanso terminado!';
-        document.getElementById('pomo-playbtn').textContent='▶';
-        try{new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA').play();}catch(e){}
-      }
-    },1000);
-  }
-}
-
-function pomoSkip(){clearInterval(pomoTimer);pomoRunning=false;pomoSeconds=0;updatePomoDisplay();document.getElementById('pomo-playbtn').textContent='▶';document.getElementById('pomo-label').textContent='Saltado';}
-function pomoPrev(){resetPomo();}
-
-function updatePomoDisplay(){
-  const m=Math.floor(pomoSeconds/60),s=pomoSeconds%60;
-  document.getElementById('pomo-display').textContent=m+':'+(s<10?'0'+s:s);
-  const circ=553,offset=circ*(1-pomoSeconds/pomoTotal);
-  document.getElementById('pomo-ring').style.strokeDashoffset=offset;
-}
-
-// ─── PROGRESO ────────────────────────────────────────────────────────────────
-const MOTIVATIONS=[
-  {e:'💪',t:'Cada sesión completada te acerca un paso más.',s:'Sigue así, lo estás haciendo genial.'},
-  {e:'🔥',t:'El esfuerzo de hoy es la nota de mañana.',s:'No hay atajos, pero tú estás en el camino correcto.'},
-  {e:'🧠',t:'La selectividad no te define, pero sí demuestra lo que puedes lograr.',s:'Tú puedes con esto.'},
-  {e:'⭐',t:'Cada Pomodoro es una victoria pequeña que suma.',s:'Roma no se construyó en un día.'},
-  {e:'🎯',t:'Focus: una sesión, un tema, un paso.',s:'Al final del día habrás avanzado más de lo que crees.'},
-];
-
-function buildProgress(){
-  const w=document.getElementById('prog-wrap');
-  const totalSessions=DAYS.reduce((acc,d)=>acc+d.s.filter(s=>s.b===undefined).length,0);
-  let totalDone=0;
-  DAYS.forEach((_,i)=>{const dm=done['d'+i]||{};totalDone+=Object.values(dm).filter(Boolean).length;});
-  const pct=totalSessions?Math.round(totalDone/totalSessions*100):0;
-  const mot=MOTIVATIONS[Math.floor(Math.random()*MOTIVATIONS.length)];
-
-  // per-subject stats
-  const subjDone={fis:0,fil:0,tec:0,mat:0,len:0,ing:0};
-  const subjTotal={fis:0,fil:0,tec:0,mat:0,len:0,ing:0};
-  DAYS.forEach((d,di)=>{
-    const dm=done['d'+di]||{};
-    d.s.forEach((s,si)=>{
-      if(s.b!==undefined||!s.c||!subjTotal[s.c]===undefined)return;
-      if(subjTotal[s.c]!==undefined)subjTotal[s.c]++;
-      if(dm[si])subjDone[s.c]++;
-    });
-  });
-
-  let html=`
-  <div class="motivation-card">
-    <span class="mot-emoji">${mot.e}</span>
-    <div class="mot-text">${mot.t}</div>
-    <div class="mot-sub">${mot.sub||mot.s}</div>
-  </div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="sc-num">${totalDone}</div><div class="sc-label">Sesiones hechas</div><div class="sc-sub">de ${totalSessions} totales</div></div>
-    <div class="stat-card"><div class="sc-num">${pct}%</div><div class="sc-label">Completado</div><div class="sc-sub">planning global</div></div>
-    <div class="stat-card"><div class="sc-num">${pomoToday}</div><div class="sc-label">Pomodoros hoy</div><div class="sc-sub">${pomoCount} en total</div></div>
-    <div class="stat-card"><div class="sc-num">${Math.max(0,12-currentDay)}</div><div class="sc-label">Días restantes</div><div class="sc-sub">de 12 en total</div></div>
-  </div>
-  <div class="prog-section-title">Progreso por día</div>`;
-
-  DAYS.forEach((d,i)=>{
-    const dm=done['d'+i]||{};
-    const dt=d.s.filter(s=>s.b===undefined).length;
-    const dc=Object.values(dm).filter(Boolean).length;
-    const dp=dt?Math.round(dc/dt*100):0;
-    html+=`<div class="day-prog-row"><div class="day-prog-label">Día ${i+1}</div><div class="day-prog-bar"><div class="day-prog-fill" style="width:${dp}%"></div></div><div class="day-prog-pct">${dp}%</div></div>`;
-  });
-
-  html+=`<div class="prog-section-title">Progreso por asignatura</div>`;
-  const subjInfo={fis:{n:'Física',c:'fis'},fil:{n:'Filosofía',c:'fil'},tec:{n:'Tecnología',c:'tec'},mat:{n:'Matemáticas',c:'mat'},len:{n:'Lengua',c:'len'},ing:{n:'Inglés',c:'ing'}};
-  Object.entries(subjInfo).forEach(([k,v])=>{
-    const tot=subjTotal[k]||0,dn=subjDone[k]||0;
-    const pp=tot?Math.round(dn/tot*100):0;
-    html+=`<div class="subj-prog-card">
-      <div class="subj-prog-row"><div class="subj-prog-dot" style="background:${SUBJ_COLORS[k]}"></div><div class="subj-prog-name">${v.n}</div><div class="subj-prog-count">${dn}/${tot}</div></div>
-      <div class="subj-prog-bar"><div class="subj-prog-fill ${k}" style="width:${pp}%"></div></div>
+// ── TEMARIO ──
+function renderTemario(){
+  document.getElementById('temario-content').innerHTML=Object.entries(TEMARIO).map(([key,subj])=>{
+    const total=subj.topics.length,mastered=subj.topics.filter(t=>S.topicStatus[t.id]==='mastered').length,pct=Math.round(mastered/total*100);
+    const isOpen=!!S.openSessions['tem_'+key];
+    return`<div class="subj-card${isOpen?' open':''}" id="sc-tem-${key}">
+      <div class="subj-hdr" onclick="toggleSubj('${key}')">
+        <div class="subj-ic" style="background:${subj.color}22">${subj.icon}</div>
+        <div class="subj-info"><div class="subj-name">${subj.name}</div><div class="subj-meta">${total} temas · ${mastered} dominados</div></div>
+        <span class="subj-pct">${pct}%</span><span class="subj-arr">▾</span>
+      </div>
+      <div class="subj-body">
+        <div class="pbar-wrap" style="margin-bottom:10px"><div class="pbar-track"><div class="pbar-fill" style="width:${pct}%;background:${subj.color}"></div></div></div>
+        ${subj.topics.map(t=>{
+          const st=S.topicStatus[t.id]||'';
+          return`<div class="topic-item${st?' '+st:''}">
+            <div class="topic-chk">${st==='mastered'?'✓':st==='reviewing'?'~':''}</div>
+            <div class="topic-info">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+                <div class="topic-name">${t.name}</div>
+                ${st?`<span class="topic-status-badge">${st==='mastered'?'✓ Dominado':'⟳ Repasando'}</span>`:''}
+              </div>
+              <div class="topic-desc">${t.desc}</div>
+              ${t.links?.length?`<div class="topic-links">${t.links.map(l=>`<a class="sc-link" href="${l.u}" target="_blank"><span class="sc-link-title">${l.t}</span><span class="sc-link-arr">→</span></a>`).join('')}</div>`:''}
+            </div>
+            <div class="topic-btns">
+              <button class="tbtn trev" onclick="event.stopPropagation();setTopic('${t.id}','reviewing')">Repasando</button>
+              <button class="tbtn tmas" onclick="event.stopPropagation();setTopic('${t.id}','mastered')">Dominado ✓</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
     </div>`;
-  });
+  }).join('');
+}
+function toggleSubj(key){S.openSessions['tem_'+key]=!S.openSessions['tem_'+key];renderTemario();}
+function setTopic(id,st){S.topicStatus[id]=S.topicStatus[id]===st?'':st;save();renderTemario();}
 
-  html+=`<button class="reset-btn" onclick="resetAll()">🗑 Reiniciar todo el progreso</button>`;
-  w.innerHTML=html;
+// ── POMODORO ──
+const PMODES={focus:{label:'Enfoque',mins:25},short:{label:'Descanso corto',mins:5},long:{label:'Descanso largo',mins:15}};
+function setPomoMode(m,el){if(S.pomoRunning)return;S.pomoMode=m;S.pomoRemaining=PMODES[m].mins*60;S.pomoTotal=S.pomoRemaining;document.querySelectorAll('.pomo-pill').forEach(x=>x.classList.remove('on'));el.classList.add('on');document.getElementById('pomo-phase').textContent=PMODES[m].label;updatePomoUI();}
+function updatePomoUI(){const m=Math.floor(S.pomoRemaining/60),s=S.pomoRemaining%60;document.getElementById('pomo-time').textContent=m+':'+(s<10?'0'+s:s);document.getElementById('pomo-ring').setAttribute('stroke-dashoffset',CIRC*(1-S.pomoRemaining/S.pomoTotal));}
+function togglePomo(){
+  if(S.pomoRunning){clearInterval(S.pomoInterval);S.pomoRunning=false;document.getElementById('pomo-play-btn').textContent='▶';}
+  else{S.pomoRunning=true;document.getElementById('pomo-play-btn').textContent='⏸';S.pomoInterval=setInterval(()=>{S.pomoRemaining--;updatePomoUI();if(S.pomoRemaining<=0){clearInterval(S.pomoInterval);S.pomoRunning=false;document.getElementById('pomo-play-btn').textContent='▶';if(S.pomoMode==='focus'){S.pomoSessions++;const subj=document.getElementById('pomo-subj').value,now=new Date();S.pomoLog.unshift({subj,time:now.getHours()+':'+(now.getMinutes()<10?'0'+now.getMinutes():now.getMinutes()),dur:'25 min'});if(S.pomoLog.length>10)S.pomoLog.pop();save();renderPomoLog();document.getElementById('pomo-scount').textContent='🍅 '+S.pomoSessions+' sesión'+(S.pomoSessions!==1?'es':'')+' hoy';}if(navigator.vibrate)navigator.vibrate([200,100,200]);S.pomoRemaining=PMODES[S.pomoMode].mins*60;S.pomoTotal=S.pomoRemaining;updatePomoUI();}},1000);}
+}
+function resetPomo(){clearInterval(S.pomoInterval);S.pomoRunning=false;document.getElementById('pomo-play-btn').textContent='▶';S.pomoRemaining=PMODES[S.pomoMode].mins*60;S.pomoTotal=S.pomoRemaining;updatePomoUI();}
+function skipPomo(){resetPomo();}
+function renderPomoLog(){const el=document.getElementById('pomo-log-list');if(!S.pomoLog.length){el.innerHTML='<p style="font-size:12px;color:var(--t3);text-align:center;padding:10px 0">Todavía no has completado ningún pomodoro</p>';return;}el.innerHTML=S.pomoLog.map(l=>{const m=SUBJ_META[l.subj]||{name:'General',color:'#888'};return`<div class="pomo-log-item"><div class="plog-dot" style="background:${m.color}"></div><div class="plog-subj">${m.name||'General'}</div><div class="plog-time">${l.time}</div><div class="plog-dur">${l.dur}</div></div>`;}).join('');document.getElementById('pomo-scount').textContent='🍅 '+S.pomoSessions+' sesión'+(S.pomoSessions!==1?'es':'')+' hoy';}
+
+// ── PROGRESO ──
+function renderProgreso(){
+  let total=0,done=0;DAYS.forEach((day,di)=>{const dm=S.done[di]||{};day.s.forEach((s,si)=>{if(s.b!==undefined)return;total++;if(dm[si])done++;});});
+  const topT=Object.values(TEMARIO).flatMap(s=>s.topics).length,topD=Object.values(S.topicStatus).filter(x=>x==='mastered').length,pct=total?Math.round(done/total*100):0;
+  document.getElementById('prog-stats').innerHTML=`
+    <div class="stat-c"><div class="sv">${pct}%</div><div class="sl">Sesiones completadas</div><div class="ss">${done} de ${total}</div></div>
+    <div class="stat-c"><div class="sv">${topD}</div><div class="sl">Temas dominados</div><div class="ss">de ${topT} en temario</div></div>
+    <div class="stat-c"><div class="sv">${S.pomoSessions}</div><div class="sl">Pomodoros</div><div class="ss">${S.pomoSessions*25} min enfoque</div></div>
+    <div class="stat-c"><div class="sv">${S.currentDay+1}/7</div><div class="sl">Día actual</div><div class="ss">${Math.max(0,7-S.currentDay-1)} días restantes</div></div>`;
+  document.getElementById('prog-subj-bars').innerHTML=Object.entries(SUBJ_META).filter(([k])=>k!=='des').map(([key,m])=>{let t=0,d=0;DAYS.forEach((day,di)=>{const dm=S.done[di]||{};day.s.forEach((s,si)=>{if(s.b!==undefined||s.c!==key)return;t++;if(dm[si])d++;});});const p=t?Math.round(d/t*100):0;return`<div class="prog-subj-row"><div class="prog-dot" style="background:${m.color}"></div><div class="prog-subj-info"><div class="prog-subj-name">${m.icon} ${m.name}</div><div class="prog-sbar"><div class="prog-sfill" style="width:${p}%;background:${m.color}"></div></div></div><div class="prog-spct" style="color:${m.color}">${p}%</div></div>`;}).join('');
+  document.getElementById('heatmap').innerHTML=DAYS.map((day,di)=>{const dm=S.done[di]||{},t=day.s.filter(s=>s.b===undefined).length,d=Object.values(dm).filter(Boolean).length;return`<div class="hm-cell${d===0?'':d===t?' full':' partial'}" title="Día ${di+1}: ${d}/${t}"></div>`;}).join('');
+  document.getElementById('hm-labels').innerHTML=DAY_NAMES.map((l,i)=>`<div class="hm-lbl">${i+1}<br><span style="font-size:8px">${l}</span></div>`).join('');
+  const achs=[{ic:'🚀',n:'Arrancaste',d:'Primera sesión completada',ok:Object.values(S.done).some(dm=>Object.values(dm).some(Boolean))},{ic:'🔥',n:'En racha',d:'5 sesiones en un día',ok:Object.values(S.done).some(dm=>Object.values(dm).filter(Boolean).length>=5)},{ic:'🍅',n:'Pomodoro master',d:'10 pomodoros completados',ok:S.pomoSessions>=10},{ic:'📚',n:'Temario activo',d:'Primer tema dominado',ok:Object.values(S.topicStatus).some(s=>s==='mastered')},{ic:'💪',n:'Mitad del sprint',d:'4 días completados',ok:S.currentDay>=3},{ic:'🏆',n:'Listo para la PAU',d:'Los 7 días completados',ok:S.currentDay>=6}];
+  document.getElementById('achievements').innerHTML=achs.map(a=>`<div class="ach-item${a.ok?'':' locked'}"><div class="ach-ic">${a.ic}</div><div><div class="ach-name">${a.n}</div><div class="ach-desc">${a.d}</div></div><span class="ach-badge ${a.ok?'ok':'no'}">${a.ok?'✓ Desbloqueado':'Bloqueado'}</span></div>`).join('');
 }
 
-function resetAll(){
-  if(!confirm('¿Seguro que quieres reiniciar todo el progreso? No se puede deshacer.'))return;
-  done={};localStorage.removeItem('sel26_done');
-  pomoCount=0;pomoToday=0;localStorage.removeItem('sel26_pomo');localStorage.removeItem('sel26_pomoday');
-  currentDay=0;saveDay(0);
-  buildDayScroller();buildSessions();updateProgress();buildProgress();
-}
-
-// ─── INIT ────────────────────────────────────────────────────────────────────
-document.getElementById('days-left').textContent=Math.max(0,12-currentDay);
-document.getElementById('pomo-count').textContent=pomoCount;
-document.getElementById('pomo-today').textContent=pomoToday;
-resetPomo();
-buildDayScroller();
+// ── INIT ──
+load();
+buildScroller();
 buildSessions();
-updateProgress();
-buildTemario();
+updateProg();
+updatePomoUI();
+renderPomoLog();
 </script>
 </body>
 </html>
